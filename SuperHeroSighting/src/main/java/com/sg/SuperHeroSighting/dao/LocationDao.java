@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Location;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
 import java.awt.Point;
 import java.util.List;
 
@@ -15,21 +17,21 @@ import java.util.List;
  */
 public interface LocationDao {
     
-    public Location getLocationById(int id);
+    public Location getLocationById(int id) throws LocationDaoException;
     
-    public Location getLocationByName(String name);
+    public Location getLocationByName(String name) throws LocationDaoException;
     
-    public Location getLocationByAddress(String address);
+    public Location getLocationByAddress(String address) throws LocationDaoException;
     
-    public Location getLocationByCoord(Point coord);
+    public Location getLocationByCoord(Point coord) throws LocationDaoException;
     
-    public List<Location> getAllLocations();
+    public List<Location> getAllLocations() throws LocationDaoException;
     
-    public Location createLocation(Location toAdd);
+    public Location createLocation(Location toAdd) throws LocationDaoException, BadUpdateException;
     
-    public void editLocation(Location toEdit);
+    public void editLocation(Location toEdit) throws LocationDaoException, BadUpdateException;
     
-    public void removeLocation(int id);
+    public void removeLocation(int id) throws LocationDaoException, BadUpdateException;
     
     
 }

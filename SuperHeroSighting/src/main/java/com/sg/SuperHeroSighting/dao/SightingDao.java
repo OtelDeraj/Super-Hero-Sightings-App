@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Sighting;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,20 +17,20 @@ import java.util.List;
  */
 public interface SightingDao {
     
-    public Sighting getSightingById(int id);
+    public Sighting getSightingById(int id) throws SightingDaoException;
     
-    public Sighting getSightingBySuperId(int id);
+    public Sighting getSightingBySuperId(int id) throws SightingDaoException;
     
-    public Sighting getSightingByLocId(int id);
+    public Sighting getSightingByLocId(int id) throws SightingDaoException;
     
-    public Sighting getSightingByDate(LocalDate date);
+    public Sighting getSightingByDate(LocalDate date) throws SightingDaoException;
     
-    public List<Sighting> getAllSightings();
+    public List<Sighting> getAllSightings() throws SightingDaoException;
     
-    public Sighting addSighting(Sighting toAdd);
+    public Sighting addSighting(Sighting toAdd) throws SightingDaoException, BadUpdateException;
     
-    public void updateSighting(Sighting toEdit);
+    public void updateSighting(Sighting toEdit) throws SightingDaoException, BadUpdateException;
     
-    public void removeSighting(int id);
+    public void removeSighting(int id) throws SightingDaoException, BadUpdateException;
     
 }

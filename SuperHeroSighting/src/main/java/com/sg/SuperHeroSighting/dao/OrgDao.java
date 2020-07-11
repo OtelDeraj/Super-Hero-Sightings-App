@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Org;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
 import java.util.List;
 
 /**
@@ -14,17 +16,17 @@ import java.util.List;
  */
 public interface OrgDao {
     
-    public Org getOrgById(int id);
+    public Org getOrgById(int id) throws OrgDaoException;
     
-    public Org getOrgByName(String name);
+    public Org getOrgByName(String name) throws OrgDaoException;
     
-    public List<Org> getAllOrgs();
+    public List<Org> getAllOrgs() throws OrgDaoException;
     
-    public List<Org> getOrgsForSuperId(int id);
+    public List<Org> getOrgsForSuperId(int id) throws OrgDaoException;
     
-    public Org createOrg(Org toAdd);
+    public Org createOrg(Org toAdd) throws OrgDaoException, BadUpdateException;
     
-    public void editOrg(Org toEdit);
+    public void editOrg(Org toEdit) throws OrgDaoException, BadUpdateException;
     
-    public void removeOrg(int id);
+    public void removeOrg(int id) throws OrgDaoException, BadUpdateException;
 }

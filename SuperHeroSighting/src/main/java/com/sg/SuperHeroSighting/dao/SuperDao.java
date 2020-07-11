@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Super;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
 import java.util.List;
 
 /**
@@ -14,19 +16,19 @@ import java.util.List;
  */
 public interface SuperDao {
     
-    public Super getSuperById(int id);
+    public Super getSuperById(int id) throws SuperDaoException;
     
-    public Super getSuperByName(String name);
+    public Super getSuperByName(String name) throws SuperDaoException;
     
-    public List<Super> getAllSupers();
+    public List<Super> getAllSupers() throws SuperDaoException;
     
-    public List<Super> getSupersByPowerId(int id);
+    public List<Super> getSupersByPowerId(int id) throws SuperDaoException;
     
-    public List<Super> getSupersByOrgId(int id);
+    public List<Super> getSupersByOrgId(int id) throws SuperDaoException;
     
-    public Super createSuper(Super toAdd);
+    public Super createSuper(Super toAdd) throws SuperDaoException, BadUpdateException;
     
-    public void editSuper(Super toEdit);
+    public void editSuper(Super toEdit) throws SuperDaoException, BadUpdateException;
     
-    public void removeSuper(int id);
+    public void removeSuper(int id) throws SuperDaoException, BadUpdateException;
 }

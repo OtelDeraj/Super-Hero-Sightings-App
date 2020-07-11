@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Power;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
 import java.util.List;
 
 /**
@@ -14,17 +16,17 @@ import java.util.List;
  */
 public interface PowerDao {
     
-    public Power getPowerById(int id);
+    public Power getPowerById(int id) throws PowerDaoException;
     
-    public Power getPowerByName(String name);
+    public Power getPowerByName(String name) throws PowerDaoException;
     
-    public List<Power> getAllPowers();
+    public List<Power> getAllPowers() throws PowerDaoException;
     
-    public List<Power> getPowersForSuperId(int id);
+    public List<Power> getPowersForSuperId(int id) throws PowerDaoException;
     
-    public Power addPower(Power toAdd);
+    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException;
     
-    public void editPower(Power toEdit);
+    public void editPower(Power toEdit) throws PowerDaoException, BadUpdateException;
     
-    public void removePower(int id);
+    public void removePower(int id) throws PowerDaoException, BadUpdateException;
 }
