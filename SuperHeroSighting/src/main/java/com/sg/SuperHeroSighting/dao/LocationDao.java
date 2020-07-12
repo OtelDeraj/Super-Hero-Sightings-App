@@ -5,10 +5,10 @@
  */
 package com.sg.SuperHeroSighting.dao;
 
+import com.sg.SuperHeroSighting.dto.Coord;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
-import java.awt.Point;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public interface LocationDao {
     
     public Location getLocationByAddress(String address) throws LocationDaoException;
     
-    public Location getLocationByCoord(Point coord) throws LocationDaoException;
+    public Location getLocationByCoord(Coord coord) throws LocationDaoException;
     
     public List<Location> getAllLocations() throws LocationDaoException;
     
