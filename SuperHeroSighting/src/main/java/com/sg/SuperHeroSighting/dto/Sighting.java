@@ -6,6 +6,7 @@
 package com.sg.SuperHeroSighting.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class Sighting {
     
     private int id;
-    private LocalDate date;
+    private Date date;
     private Super spottedSuper;
     private Location location;
     
@@ -23,13 +24,15 @@ public class Sighting {
         
     }
     
-    public Sighting(LocalDate date, Super spottedSuper, Location location){
+    // creation
+    public Sighting(Date date, Super spottedSuper, Location location){
         this.date = date;
         this.spottedSuper = spottedSuper;
         this.location = location;
     }
     
-    public Sighting(int id, LocalDate date, Super spottedSuper, Location location){
+    // testing & mapping
+    public Sighting(int id, Date date, Super spottedSuper, Location location){
         this.id = id;
         this.date = date;
         this.spottedSuper = spottedSuper;
@@ -95,14 +98,14 @@ public class Sighting {
     /**
      * @return the date
      */
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
