@@ -5,10 +5,154 @@
  */
 package com.sg.SuperHeroSighting.dto;
 
+import java.awt.Point;
+import java.util.Objects;
+
 /**
  *
  * @author Isaia
  */
 public class Location {
+    
+    private int id;
+    private String name;
+    private String description;
+    private String address;
+    private Coord coord; // coord object holds lat and lon values
+    
+    public Location(){
+        
+    }
+    
+    // use for creation
+    public Location(String name, String description, String address, Coord coord){
+        this.name = name;
+        this.description = description;
+        this.address = address;
+        this.coord = coord;
+    }
+    
+    // use for testing
+    public Location(int id, String name, String description, String address, Coord coord){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.address = address;
+        this.coord = coord;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + this.id;
+        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 67 * hash + Objects.hashCode(this.description);
+        hash = 67 * hash + Objects.hashCode(this.address);
+        hash = 67 * hash + Objects.hashCode(this.coord);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Location other = (Location) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) {
+            return false;
+        }
+        if (!Objects.equals(this.coord, other.coord)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    
+    
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the coord
+     */
+    public Coord getCoord() {
+        return coord;
+    }
+
+    /**
+     * @param coord the coord to set
+     */
+    public void setCoord(Coord coord) {
+        this.coord = coord;
+    }
     
 }

@@ -146,7 +146,6 @@ public class SuperDBImpl implements SuperDao {
                     rs.getString("description")
             );
         }
-
     }
     
     private static class PowerMapper implements RowMapper<Power> {
@@ -170,8 +169,5 @@ public class SuperDBImpl implements SuperDao {
                     rs.getString("phone")
             );
         }
-
-        
-
     }
 }
