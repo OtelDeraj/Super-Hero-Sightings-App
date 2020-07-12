@@ -62,7 +62,9 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException {
         int affectedRows = template.update("INSERT INTO Powers(name) VALUES(?)", toAdd.getName());
-        if(affectedRows < 1) throw new BadUpdateException("Failed to add power to database");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("Failed to add power to database");
+        }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
         return toAdd;
@@ -71,22 +73,28 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public void editPower(Power toEdit) throws BadUpdateException {
         int affectedRows = template.update("UPDATE Powers SET name = ? WHERE powerId = ?", toEdit.getName(), toEdit.getId());
-        if(affectedRows < 1) throw new BadUpdateException("No rows updated");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("No rows updated");
+        }
     }
 
     @Override
     public void removePower(int id) throws BadUpdateException {
         template.update("DELETE From Super_Powers WHERE powerId = ?", id);
         int affectedRows = template.update("DELETE From Powers WHERE powerId = ?", id);
-        if(affectedRows < 1) throw new BadUpdateException("No powers deleted");
-        if(affectedRows > 1) throw new BadUpdateException("More than one power deleted. This is a problem.");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("No powers deleted");
+        }
+        if (affectedRows > 1) {
+            throw new BadUpdateException("More than one power deleted. This is a problem.");
+        }
     }
 
     private static class PowerMapper implements RowMapper<Power> {
 
         @Override
         public Power mapRow(ResultSet rs, int i) throws SQLException {
-            return new Power(rs.getString("name"));
+            return new Power(rs.getInt("powerId"), rs.getString("name"));
         }
 
     }
