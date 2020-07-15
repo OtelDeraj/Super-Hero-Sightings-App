@@ -7,6 +7,8 @@ package com.sg.SuperHeroSighting.dto;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,13 +17,26 @@ import java.util.Set;
 public class Super {
     
     private int id;
+    @NotBlank(message="Please enter a name for this Super")
+    @Size(max=30, message="Name must be 30 characters or less")
     private String name;
+    @NotBlank(message="Please entere a description of the Super")
+    @Size(max=255, message="Please describe the Super in 255 characters or less")
     private String description;
     private Set<Power> powers;
     private Set<Org> orgs;
 
     public Super(){
         
+    }
+    
+    // copy constructor
+    public Super(Super that){
+        this.id = that.id;
+        this.name = that.name;
+        this.description = that.description;
+        this.powers = that.powers;
+        this.orgs = that.orgs;
     }
     
     // used for Super Mapping

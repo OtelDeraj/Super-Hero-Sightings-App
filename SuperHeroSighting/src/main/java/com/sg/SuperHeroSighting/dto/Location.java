@@ -7,6 +7,8 @@ package com.sg.SuperHeroSighting.dto;
 
 import java.awt.Point;
 import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,13 +17,28 @@ import java.util.Objects;
 public class Location {
     
     private int id;
+    @NotBlank(message="Please enter a location name")
+    @Size(max=50, message="Name cannot be more than 50 characters long")
     private String name;
+    @NotBlank(message="Please enter a location description")
+    @Size(max=255, message="Please describe the hero in 255 characters or less")
     private String description;
+    @NotBlank(message="Please enter an address")
+    @Size(max=60, message="Address cannot be more than 60 characters long")
     private String address;
     private Coord coord; // coord object holds lat and lon values
     
     public Location(){
         
+    }
+    
+    // copy constructor
+    public Location(Location that){
+        this.id = that.id;
+        this.name = that.name;
+        this.description = that.description;
+        this.address = that.address;
+        this.coord = that.coord;
     }
     
     // use for creation

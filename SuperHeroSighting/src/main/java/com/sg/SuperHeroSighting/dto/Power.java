@@ -6,6 +6,8 @@
 package com.sg.SuperHeroSighting.dto;
 
 import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -14,16 +16,26 @@ import java.util.Objects;
 public class Power {
     
     private int id;
+    @NotBlank(message="Please enter a name for this power")
+    @Size(max=30, message="Power name must be 30 characters or less")
     private String name;
     
     public Power(){
         
     }
     
+    // copy constructor
+    public Power(Power that){
+        this.id = that.id;
+        this.name = that.name;
+    }
+    
+    // creation constructor
     public Power(String name){
         this.name = name;
     }
     
+    // testing constructor
     public Power(int id, String name){
         this.id = id;
         this.name = name;

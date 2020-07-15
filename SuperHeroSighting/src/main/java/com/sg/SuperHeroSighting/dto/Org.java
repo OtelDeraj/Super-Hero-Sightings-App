@@ -7,6 +7,9 @@ package com.sg.SuperHeroSighting.dto;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,15 +18,34 @@ import java.util.Set;
 public class Org {
     
     private int id;
+    @NotBlank(message="Please enter a name for this organization")
+    @Size(max=50, message="Name must be 50 characters or less")
     private String name;
+    @NotBlank(message="Please enter a description for this organization")
+    @Size(max=255, message="Please describe this organization in 255 characters or less")
     private String description;
+    @NotBlank(message="Please enter an address for this organization")
+    @Size(max=60, message="Address must be 60 characters or less")
     private String address;
+    @NotBlank(message="Please provide a phone number for this organization")
+    @Size(max=15, message="Phone number must be 15 characters or less")
+    @Pattern(regexp="^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$")
     private String phone;
     private Set<Super> supers;
     
     
     public Org(){
         
+    }
+    
+    // copy constructor
+    public Org(Org that){
+        this.id = that.id;
+        this.name = that.name;
+        this.description = that.description;
+        this.address = that.address;
+        this.phone = that.phone;
+        this.supers = that.supers;
     }
     
     // used for Org Mapping

@@ -5,9 +5,11 @@
  */
 package com.sg.SuperHeroSighting.dto;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 
 /**
  *
@@ -16,8 +18,13 @@ import java.util.Objects;
 public class Sighting {
     
     private int id;
+    @NotBlank(message="Please enter a date for this sighting")
+    @Past(message="Sighting date must be in the past")
+    @Pattern(regexp="^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}$")
     private Date date;
+    @NotBlank(message="Please select which super was spotted")
     private Super spottedSuper;
+    @NotBlank(message="Please select a location for this sighting")
     private Location location;
     
     public Sighting(){

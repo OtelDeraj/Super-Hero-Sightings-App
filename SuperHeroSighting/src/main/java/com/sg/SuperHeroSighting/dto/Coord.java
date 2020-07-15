@@ -7,6 +7,9 @@ package com.sg.SuperHeroSighting.dto;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 
 /**
  *
@@ -14,13 +17,26 @@ import java.util.Objects;
  */
 public class Coord {
     
+    @NotBlank(message="Please enter a latitude")
+    @DecimalMax("90.00000")
+    @DecimalMin("-90.00000")
     private BigDecimal lat;
+    
+    @NotBlank(message="Please enter a longitude")
+    @DecimalMax("180.00000")
+    @DecimalMin("-180.00000")
     private BigDecimal lon;
     
     public Coord(){
         
     }
     
+    public Coord(Coord that){
+        this.lat = that.lat;
+        this.lon = that.lon;
+    }
+    
+    // creation constructor
     public Coord(BigDecimal lat, BigDecimal lon){
         this.lat = lat;
         this.lon = lon;
