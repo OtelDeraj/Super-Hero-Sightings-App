@@ -5,8 +5,10 @@
  */
 package com.sg.SuperHeroSighting.dao;
 
+import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +46,7 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public List<Power> getAllPowers() throws PowerDaoException {
         List<Power> allPowers = template.query("SELECT * FROM Powers", new PowerMapper());
-        if (allPowers.size() == 0) {
+        if (allPowers.isEmpty()) {
             throw new PowerDaoException("No powers found");
         }
         return allPowers;
@@ -53,14 +55,15 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public List<Power> getPowersForSuperId(int id) throws PowerDaoException {
         List<Power> powers = template.query("SELECT * FROM Super_Powers WHERE superId = ?", new PowerMapper(), id);
-        if (powers.size() == 0) {
+        if (powers.isEmpty()) {
             throw new PowerDaoException("No powers found for that super id");
         }
         return powers;
     }
 
     @Override
-    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException {
+    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, InvalidEntityException {
+        validatePowerData(toAdd);
         int affectedRows = template.update("INSERT INTO Powers(name) VALUES(?)", toAdd.getName());
         if (affectedRows < 1) {
             throw new BadUpdateException("Failed to add power to database");
@@ -71,7 +74,8 @@ public class PowerDBImpl implements PowerDao {
     }
 
     @Override
-    public void editPower(Power toEdit) throws BadUpdateException {
+    public void editPower(Power toEdit) throws BadUpdateException, InvalidEntityException {
+        validatePowerData(toEdit);
         int affectedRows = template.update("UPDATE Powers SET name = ? WHERE powerId = ?", toEdit.getName(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows updated");
@@ -89,6 +93,13 @@ public class PowerDBImpl implements PowerDao {
             throw new BadUpdateException("More than one power deleted. This is a problem.");
         }
     }
+    
+    private void validatePowerData(Power p) throws InvalidEntityException{
+        if(p == null) throw new InvalidEntityException("Power object cannot be null");
+        if(p.getName() ==  null) throw new InvalidEntityException("Power fields cannot be null"); 
+    }
+        
+    
 
     private static class PowerMapper implements RowMapper<Power> {
 

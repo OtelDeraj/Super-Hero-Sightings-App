@@ -5,18 +5,34 @@
  */
 package com.sg.SuperHeroSighting.dao;
 
+import com.sg.SuperHeroSighting.TestAppConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  *
  * @author Isaia
  */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = TestAppConfig.class)
+@ActiveProfiles("database")
 public class PowerDBImplTest {
+    
+    @Autowired
+    PowerDao dao;
+    
+    @Autowired
+    JdbcTemplate template;
     
     public PowerDBImplTest() {
     }
@@ -31,6 +47,27 @@ public class PowerDBImplTest {
     
     @BeforeEach
     public void setUp() {
+        
+        template.update("DELETE FROM Super_Powers");
+        template.update("DELETE FROM Supers");
+        template.update("ALTER TABLE Supers auto_increment = 1");
+        template.update("INSERT INTO Supers(name, description) VALUES"
+                + "('First Hero', 'First Desc'),"
+                + "('Second Hero', 'Second Desc'),"
+                + "('Third Hero', 'Third Desc')");
+        template.update("DELETE FROM Powers");
+        template.update("ALTER TABLE Powers auto_increment = 1");
+        template.update("INSERT INTO Powers(name) VALUES"
+                + "('First Power'),"
+                + "('Second Power'),"
+                + "('Third Power')");
+        template.update("INSERT INTO Super_Powers(superId, powerId) VALUES"
+                + "(1, 1),"
+                + "(1, 2),"
+                + "(2, 2),"
+                + "(3, 3)");
+        
+        
     }
     
     @AfterEach

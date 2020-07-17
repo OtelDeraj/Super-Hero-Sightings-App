@@ -5,18 +5,34 @@
  */
 package com.sg.SuperHeroSighting.dao;
 
+import com.sg.SuperHeroSighting.TestAppConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  *
  * @author Isaia
  */
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = TestAppConfig.class)
+@ActiveProfiles("database")
 public class SightingDBImplTest {
+    
+    @Autowired
+    SightingDao dao;
+    
+    @Autowired
+    JdbcTemplate template;
     
     public SightingDBImplTest() {
     }

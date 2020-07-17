@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,15 +33,17 @@ public class OrgDBImpl implements OrgDao {
     JdbcTemplate template;
 
     @Override
-    public Org getOrgById(int id) {
+    public Org getOrgById(int id) throws OrgDaoException {
         Org toReturn = template.queryForObject("SELECT * FROM Orgs WHERE orgId = ?", new OrgMapper(), id);
+        if(toReturn == null) throw new OrgDaoException("Failed to find Org for given ID");
         toReturn.setSupers(getSupersByOrgId(id));
         return toReturn;
     }
 
     @Override
-    public Org getOrgByName(String name) {
+    public Org getOrgByName(String name) throws OrgDaoException {
         Org toReturn = template.queryForObject("SELECT * FROM Orgs WHERE name = ?", new OrgMapper(), name);
+        if(toReturn == null) throw new OrgDaoException("Failed to find Org for given ID");
         toReturn.setSupers(getSupersByOrgId(toReturn.getId()));
         return toReturn;
     }
@@ -48,7 +51,7 @@ public class OrgDBImpl implements OrgDao {
     @Override
     public List<Org> getAllOrgs() throws OrgDaoException {
         List<Org> allOrgs = template.query("SELECT * FROM Orgs", new OrgMapper());
-        if (allOrgs.size() == 0) {
+        if (allOrgs.isEmpty()) {
             throw new OrgDaoException("No Orgs found");
         }
         associateSupersToOrg(allOrgs);
@@ -58,7 +61,7 @@ public class OrgDBImpl implements OrgDao {
     @Override
     public List<Org> getOrgsForSuperId(int id) throws OrgDaoException {
         List<Org> orgsForSuper = template.query("SELECT * FROM Affiliations WHERE superId = ?", new OrgMapper(), id);
-        if (orgsForSuper.size() == 0) {
+        if (orgsForSuper.isEmpty()) {
             throw new OrgDaoException("No orgs found for given super id");
         }
         associateSupersToOrg(orgsForSuper);
@@ -66,7 +69,8 @@ public class OrgDBImpl implements OrgDao {
     }
 
     @Override
-    public Org createOrg(Org toAdd) throws BadUpdateException {
+    public Org createOrg(Org toAdd) throws BadUpdateException, InvalidEntityException {
+        validateOrgData(toAdd);
         int affectedRows = template.update("INSERT INTO Orgs(name, description, address, phone) "
                 + "VALUES(?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(),
                 toAdd.getAddress(), toAdd.getPhone());
@@ -79,7 +83,8 @@ public class OrgDBImpl implements OrgDao {
     }
 
     @Override
-    public void editOrg(Org toEdit) throws BadUpdateException {
+    public void editOrg(Org toEdit) throws BadUpdateException, InvalidEntityException {
+        validateOrgData(toEdit);
         int affectedRows = template.update("UPDATE Orgs SET name = ?, description = ?, address = ?, phone = ? WHERE orgId = ?",
                 toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(), toEdit.getPhone(), toEdit.getId());
         if (affectedRows < 1) {
@@ -109,6 +114,14 @@ public class OrgDBImpl implements OrgDao {
         }
     }
 
+    private void validateOrgData(Org o) throws InvalidEntityException{
+        if(o == null) throw new InvalidEntityException("Org object cannot be null");
+        if(o.getName() == null || o.getDescription() == null || o.getAddress() == null ||
+                o.getPhone() == null || o.getSupers() == null){
+            throw new InvalidEntityException("Org fields cannot be null");
+        }
+    }
+    
     private static class OrgMapper implements RowMapper<Org> {
 
         @Override

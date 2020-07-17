@@ -7,6 +7,7 @@ package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +28,9 @@ public interface SightingDao {
     
     public List<Sighting> getAllSightings() throws SightingDaoException;
     
-    public Sighting addSighting(Sighting toAdd) throws SightingDaoException, BadUpdateException;
+    public Sighting addSighting(Sighting toAdd) throws SightingDaoException, BadUpdateException, InvalidEntityException;
     
-    public void updateSighting(Sighting toEdit) throws SightingDaoException, BadUpdateException;
+    public void updateSighting(Sighting toEdit) throws SightingDaoException, BadUpdateException, InvalidEntityException;
     
     public void removeSighting(int id) throws SightingDaoException, BadUpdateException;
     

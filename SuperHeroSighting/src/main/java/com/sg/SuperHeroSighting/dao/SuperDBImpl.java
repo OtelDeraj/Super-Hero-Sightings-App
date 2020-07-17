@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,16 +34,18 @@ public class SuperDBImpl implements SuperDao {
     JdbcTemplate template;
 
     @Override
-    public Super getSuperById(int id) {
+    public Super getSuperById(int id) throws SuperDaoException {
         Super toReturn = template.queryForObject("SELECT * FROM Supers WHERE superId = ?", new SuperMapper(), id);
+        if(toReturn == null) throw new SuperDaoException("No Super found for given ID");
         toReturn.setPowers(getPowersBySuperId(id));
         toReturn.setOrgs(getOrgsBySuperId(id));
         return toReturn;
     }
 
     @Override
-    public Super getSuperByName(String name) {
+    public Super getSuperByName(String name) throws SuperDaoException {
         Super toReturn = template.queryForObject("SELECT * FROM Supers WHERE name = ?", new SuperMapper(), name);
+        if(toReturn == null) throw new SuperDaoException("No Super found for given Name");
         toReturn.setPowers(getPowersBySuperId(toReturn.getId()));
         toReturn.setOrgs(getOrgsBySuperId(toReturn.getId()));
         return toReturn;
@@ -51,7 +54,7 @@ public class SuperDBImpl implements SuperDao {
     @Override
     public List<Super> getAllSupers() throws SuperDaoException {
         List<Super> allSupers = template.query("SELECT * FROM Supers", new SuperMapper());
-        if (allSupers.size() == 0) {
+        if (allSupers.isEmpty()) {
             throw new SuperDaoException("No Supers found in database");
         }
         associatePowersToSuper(allSupers);
@@ -62,7 +65,7 @@ public class SuperDBImpl implements SuperDao {
     @Override
     public List<Super> getSupersByPowerId(int id) throws SuperDaoException {
         List<Super> supersByPower = template.query("SELECT * FROM Super_Powers WHERE powerId = ?", new SuperMapper(), id);
-        if (supersByPower.size() == 0) {
+        if (supersByPower.isEmpty()) {
             throw new SuperDaoException("No supers found for given power id");
         }
         associatePowersToSuper(supersByPower);
@@ -73,7 +76,7 @@ public class SuperDBImpl implements SuperDao {
     @Override
     public List<Super> getSupersByOrgId(int id) throws SuperDaoException {
         List<Super> supersByOrg = template.query("SELECT * FROM Affiliations WHERE orgId", new SuperMapper(), id);
-        if (supersByOrg.size() == 0) {
+        if (supersByOrg.isEmpty()) {
             throw new SuperDaoException("No supers found for given org id");
         }
         associatePowersToSuper(supersByOrg);
@@ -82,7 +85,8 @@ public class SuperDBImpl implements SuperDao {
     }
 
     @Override
-    public Super createSuper(Super toAdd) throws BadUpdateException {
+    public Super createSuper(Super toAdd) throws BadUpdateException, InvalidEntityException {
+        validateSuperData(toAdd);
         int affectedRows = template.update("INSERT INTO Supers(name, description) VALUES(?, ?)",
                 toAdd.getName(), toAdd.getDescription());
         if (affectedRows == 0) {
@@ -94,7 +98,8 @@ public class SuperDBImpl implements SuperDao {
     }
 
     @Override
-    public void editSuper(Super toEdit) throws BadUpdateException {
+    public void editSuper(Super toEdit) throws BadUpdateException, InvalidEntityException {
+        validateSuperData(toEdit);
         int affectedRows = template.update("UPDATE Supers SET name = ?, description = ?, WHERE superId = ?",
                 toEdit.getName(), toEdit.getDescription(), toEdit.getId());
         if (affectedRows < 1) {
@@ -135,6 +140,12 @@ public class SuperDBImpl implements SuperDao {
         }
     }
     
+    private void validateSuperData(Super s) throws InvalidEntityException{
+        if(s == null) throw new InvalidEntityException("Super object cannot be null");
+        if(s.getName() == null || s.getDescription() == null || s.getOrgs() == null || s.getPowers() == null){
+            throw new InvalidEntityException("Super fields cannot be null");
+        }
+    }
     
     private static class SuperMapper implements RowMapper<Super> {
 

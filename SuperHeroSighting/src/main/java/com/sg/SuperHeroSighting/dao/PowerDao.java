@@ -7,6 +7,7 @@ package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public interface PowerDao {
     
     public List<Power> getPowersForSuperId(int id) throws PowerDaoException;
     
-    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException;
+    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, InvalidEntityException;
     
-    public void editPower(Power toEdit) throws PowerDaoException, BadUpdateException;
+    public void editPower(Power toEdit) throws PowerDaoException, BadUpdateException, InvalidEntityException;
     
     public void removePower(int id) throws PowerDaoException, BadUpdateException;
 }

@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Coord;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
 import java.awt.Point;
 import java.sql.ResultSet;
@@ -46,20 +47,23 @@ public class LocationDBImpl implements LocationDao {
     }
 
     @Override
-    public Location getLocationByCoord(Coord coord) {
+    public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException {
+        if(toSearch == null) throw new InvalidEntityException("Coord toSearch cannot be null");
+        if(toSearch.getLat() == null || toSearch.getLon() == null) throw new InvalidEntityException("Coord toSearch cannot have null fields");
         return template.queryForObject("SELECT * FROM Locations WHERE lat = ? AND lon = ?",
-                new LocationMapper(), coord.getLat(), coord.getLon());
+                new LocationMapper(), toSearch.getLat(), toSearch.getLon());
     }
 
     @Override
     public List<Location> getAllLocations() throws LocationDaoException {
         List<Location> allLocations = template.query("SELECT * FROM Locations", new LocationMapper());
-        if(allLocations.size() == 0) throw new LocationDaoException("No locations found");
+        if(allLocations.isEmpty()) throw new LocationDaoException("No locations found");
         return allLocations;
     }
 
     @Override
-    public Location createLocation(Location toAdd) throws LocationDaoException {
+    public Location createLocation(Location toAdd) throws LocationDaoException, InvalidEntityException {
+        validateLocationData(toAdd);
         int affectedRows = template.update("INSERT INTO Locations(name, description, address, lat, lon)"
                 + "VALUES(?, ?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(), toAdd.getAddress(),
                 toAdd.getCoord().getLat(), toAdd.getCoord().getLon());
@@ -70,7 +74,8 @@ public class LocationDBImpl implements LocationDao {
     }
 
     @Override
-    public void editLocation(Location toEdit) throws BadUpdateException {
+    public void editLocation(Location toEdit) throws BadUpdateException, InvalidEntityException {
+        validateLocationData(toEdit);
         int affectedRows = template.update("UPDATE Locations SET name = ?, description = ?, address = ?,"
                 + " lat = ?, lon = ? WHERE locId = ?", toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(),
                 toEdit.getCoord().getLat(), toEdit.getCoord().getLon(), toEdit.getId());
@@ -84,6 +89,14 @@ public class LocationDBImpl implements LocationDao {
         int affectedRows = template.update("DELETE FROM Locations WHERE locId = ?", id);
         if(affectedRows < 1) throw new BadUpdateException("No locations removed");
         if(affectedRows > 1) throw new BadUpdateException("More than one location removed");
+    }
+    
+    private void validateLocationData(Location l) throws InvalidEntityException{
+        if(l == null) throw new InvalidEntityException("Location object cannot be null");
+        if(l.getName() == null || l.getDescription() == null || l.getAddress() == null ||
+                l.getCoord() == null || l.getCoord().getLat() == null || l.getCoord().getLon() == null){
+            throw new InvalidEntityException("Location fields cannot be null");
+        }
     }
 
     private static class LocationMapper implements RowMapper<Location> {

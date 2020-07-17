@@ -46,7 +46,8 @@ locId int primary key auto_increment,
 `name` varchar(50) not null unique,
 `description` varchar(255) not null,
 address varchar(60) not null,
-coord point not null
+lat decimal(7, 5) not null,
+lon decimal(8, 5) not null
 );
 
 create table Sightings(
