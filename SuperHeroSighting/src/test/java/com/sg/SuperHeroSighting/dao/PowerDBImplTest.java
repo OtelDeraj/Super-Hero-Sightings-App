@@ -48,6 +48,7 @@ public class PowerDBImplTest {
     @BeforeEach
     public void setUp() {
         
+        template.update("DELETE FROM Affiliations");
         template.update("DELETE FROM Super_Powers");
         template.update("DELETE FROM Supers");
         template.update("ALTER TABLE Supers auto_increment = 1");

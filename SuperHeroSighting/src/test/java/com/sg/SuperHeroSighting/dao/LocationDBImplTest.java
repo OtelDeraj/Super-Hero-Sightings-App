@@ -47,6 +47,7 @@ public class LocationDBImplTest {
     
     @BeforeEach
     public void setUp() {
+        template.update("DELETE FROM Sightings");
         template.update("DELETE FROM Locations");
         template.update("ALTER TABLE Locations auto_increment = 1");
         template.update("INSERT INTO Locations(name, description, address, lat, lon) VALUES"

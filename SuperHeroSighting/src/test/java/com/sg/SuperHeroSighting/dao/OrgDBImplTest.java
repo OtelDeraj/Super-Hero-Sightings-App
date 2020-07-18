@@ -47,6 +47,26 @@ public class OrgDBImplTest {
     
     @BeforeEach
     public void setUp() {
+        template.update("DELETE FROM Affiliations");
+        template.update("DELETE FROM Super_Powers");
+        template.update("DELETE FROM Organizations");
+        template.update("ALTER TABLE Organizations auto_increment = 1");
+        template.update("INSERT INTO Organizations(name, description, address, phone) VALUES"
+                + "('First Org', 'First OD', 'First Adr', '666-555-4444'),"
+                + "('Second Org', 'Second OD', 'Second Adr', '222-111-9999'),"
+                + "('Third Org', 'Third OD', 'Third Adr', '444-555-6666')");
+        template.update("DELETE FROM Supers");
+        template.update("ALTER TABLE Supers auto_increment = 1");
+        template.update("INSERT INTO Supers(name, description) VALUES"
+                + "('First Hero', 'First HD'),"
+                + "('Second Hero', 'Second HD'),"
+                + "('Third Hero', 'Third HD')");
+        template.update("INSERT INTO Affiliations(orgId, superId) VALUES"
+                + "(1, 1),"
+                + "(1, 1),"
+                + "(2, 1),"
+                + "(3, 2)");
+                
     }
     
     @AfterEach

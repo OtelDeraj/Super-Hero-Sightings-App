@@ -75,7 +75,7 @@ public class SightingDBImpl implements SightingDao {
         validateSightingData(toAdd);
         int affectedRows = template.update("INSERT INTO Sightings(sightDate, superId, locId)"
                 + "VALUES(?, ?, ?)", toAdd.getDate(), toAdd.getSpottedSuper().getId(), toAdd.getLocation().getId());
-        if(affectedRows < 1) throw new SightingDaoException("No sightings found");
+        if(affectedRows < 1) throw new SightingDaoException("Sighting not added");
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
         return toAdd;

@@ -27,28 +27,36 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(classes = TestAppConfig.class)
 @ActiveProfiles("database")
 public class SuperDBImplTest {
-    
+
     @Autowired
     SuperDao dao;
-    
+
     @Autowired
     JdbcTemplate template;
-    
+
     public SuperDBImplTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
+        template.update("DELETE FROM Affiliations");
+        template.update("DELETE FROM Sightings");
+        template.update("DELETE FROM Supers");
+        template.update("ALTER TABLE Supers auto_increment = 1");
+        template.update("INSERT INTO Supers(name, description) VALUES"
+                + "('First Hero', 'First Desc'),"
+                + "('Second Hero', 'Second Desc'),"
+                + "('Third Hero', 'Third Desc')");
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -108,5 +116,5 @@ public class SuperDBImplTest {
     @Test
     public void testRemoveSuper() throws Exception {
     }
-    
+
 }

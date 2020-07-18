@@ -5,10 +5,18 @@
  */
 package com.sg.SuperHeroSighting.service;
 
+import com.sg.SuperHeroSighting.dao.OrgDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 /**
  *
  * @author Isaia
  */
+@Service
 public class OrgService {
+    
+    @Autowired
+    OrgDao orgDao;
     
 }

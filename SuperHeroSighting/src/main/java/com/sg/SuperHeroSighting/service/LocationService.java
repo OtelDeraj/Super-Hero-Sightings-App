@@ -5,10 +5,20 @@
  */
 package com.sg.SuperHeroSighting.service;
 
+import com.sg.SuperHeroSighting.dao.LocationDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 /**
  *
  * @author Isaia
  */
+@Service
 public class LocationService {
+    
+    @Autowired
+    LocationDao locDao;
+    
+    
     
 }

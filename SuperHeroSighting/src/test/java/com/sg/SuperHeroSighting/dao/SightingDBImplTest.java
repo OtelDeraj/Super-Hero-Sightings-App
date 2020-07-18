@@ -47,6 +47,26 @@ public class SightingDBImplTest {
     
     @BeforeEach
     public void setUp() {
+        template.update("DELETE FROM Affiliations");
+        template.update("DELETE FROM Super_Powers");
+        template.update("DELETE FROM Sightings");
+        template.update("ALTER TABLE Sightings auto_increment = 1");
+        template.update("DELETE FROM Locations");
+        template.update("ALTER TABLE Locations auto_increment = 1");
+        template.update("INSERT INTO Locations(name, description, address, lat, lon) VALUES"
+                + "('First Loc', 'First Desc', 'First Address', 90.00000, 180.00000),"
+                + "('Second Loc', 'Second Desc', 'Second Address', 45.00000, 90.00000),"
+                + "('Third Loc', 'Third Desc', 'Third Address', -45.00000, -90.00000)");
+        template.update("DELETE FROM Supers");
+        template.update("ALTER TABLE Supers auto_increment = 1");
+        template.update("INSERT INTO Supers(name, description) VALUES"
+                + "('First Hero', 'First Desc'),"
+                + "('Second Hero', 'Second Desc'),"
+                + "('Third Hero', 'Third Desc')");
+        template.update("INSERT INTO Sightings(sightDate, superId, locId) VALUES"
+                + "('2020-10-20', 1, 3),"
+                + "('2020-10-18', 2, 2),"
+                + "('2020-10-15', 3, 1)");
     }
     
     @AfterEach
