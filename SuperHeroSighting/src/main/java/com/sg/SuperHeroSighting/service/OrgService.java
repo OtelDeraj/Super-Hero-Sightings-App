@@ -6,6 +6,11 @@
 package com.sg.SuperHeroSighting.service;
 
 import com.sg.SuperHeroSighting.dao.OrgDao;
+import com.sg.SuperHeroSighting.dto.Org;
+import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
+import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +23,13 @@ public class OrgService {
     
     @Autowired
     OrgDao orgDao;
+
+    public Org getOrgById(Integer id) throws InvalidIdException {
+        try {
+            return orgDao.getOrgById(id);
+        } catch (OrgDaoException ex) {
+            throw new InvalidIdException("No org found for given ID");
+        }
+    }
     
 }

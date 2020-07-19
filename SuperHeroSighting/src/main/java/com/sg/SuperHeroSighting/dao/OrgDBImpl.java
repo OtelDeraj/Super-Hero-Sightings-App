@@ -105,7 +105,8 @@ public class OrgDBImpl implements OrgDao {
     }
 
     private Set<Super> getSupersByOrgId(int id) {
-        return new HashSet<>(template.query("SELECT * FROM Affiliations WHERE orgId = ?", new SuperMapper(), id));
+        return new HashSet<>(template.query("SELECT * FROM Supers su INNER JOIN Affiliations af ON su.superId = af.superId WHERE orgId = ?",
+                new SuperMapper(), id));
     }
 
     private void associateSupersToOrg(List<Org> orgs) {

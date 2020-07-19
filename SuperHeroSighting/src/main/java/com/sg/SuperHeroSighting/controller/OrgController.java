@@ -5,8 +5,14 @@
  */
 package com.sg.SuperHeroSighting.controller;
 
+import com.sg.SuperHeroSighting.dto.Org;
+import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
+import com.sg.SuperHeroSighting.service.OrgService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -15,9 +21,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class OrgController {
     
+    @Autowired
+    OrgService service;
+    
     
     @GetMapping("/orgs")
     public String displayOrgsPage(){
         return "orgs";
+    }
+    
+    @GetMapping("/org/{id}")
+    public String displayOrgDetails(@PathVariable Integer id, Model pageModel) throws InvalidIdException{
+        Org toDisplay = service.getOrgById(id);
+        pageModel.addAttribute("org", toDisplay);
+        return "orgdetail";
     }
 }

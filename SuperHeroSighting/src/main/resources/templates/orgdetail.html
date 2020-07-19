@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>WWSSD | Organizations</title>
+        <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -41,11 +41,62 @@ and open the template in the editor.
                 </div>
             </div>
 
-
-
-
-
-
+            <div class="row m-4 border border-dark">
+                <div class="col-md-3">
+                    <h3>About This Organization</h3>
+                </div>
+                <table class="col-md-9 table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td th:text="${org.id}"></td>
+                            <td th:text="${org.name}"></td>
+                            <td th:text="${org.address}"></td>
+                            <td th:text="${org.phone}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row m-4 border border-dark">
+                <div class="col-md-12">
+                    <div class="row m-4">
+                        <div class="col-md-4">
+                            <h3>Org Description</h3>
+                        </div>
+                        <div class="col-md-8">
+                            <p th:text="org.description"></p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row m-4">
+                        <div class="text-center col-md-12">
+                            <h3 class="text-center">Known Members</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Super</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="super : ${org.supers}">
+                                        <td th:text="${super.name}"></td>
+                                        <th><a href="#" th:href="${'/super/' + super.id}">...</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 
 

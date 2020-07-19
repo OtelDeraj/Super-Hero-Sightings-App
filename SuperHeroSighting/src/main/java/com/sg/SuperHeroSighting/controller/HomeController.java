@@ -5,7 +5,16 @@
  */
 package com.sg.SuperHeroSighting.controller;
 
+import com.sg.SuperHeroSighting.dto.Sighting;
+import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
+import com.sg.SuperHeroSighting.service.SightingService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -15,8 +24,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
     
+    @Autowired
+    SightingService service;
+    
     @GetMapping("/")
-    public String displayHome(){
+    public String displayHome(Model pageModel){
+        List<Sighting> allSightings = new ArrayList<>();
+        try {
+            allSightings = service.getAllSightings();
+        } catch (EmptyResultException ex) {
+        }
+        int recentSightingsCount = 5;
+        if(allSightings.size() < recentSightingsCount){
+            recentSightingsCount = allSightings.size();
+        }
+        
+        Sighting[] lastFive = new Sighting[recentSightingsCount];
+        
+        for(int i = 0; i < 5; i++){
+            if(i < allSightings.size()){
+                lastFive[i] = allSightings.get(allSightings.size() - 1 - i);
+            } else {
+                break;
+            }
+        }
+        
+        pageModel.addAttribute("sightings", lastFive);
+        
         return "home";
     }
     

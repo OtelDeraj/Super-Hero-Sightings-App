@@ -6,14 +6,14 @@ and open the template in the editor.
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>WWSSD | Supers</title>
+        <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     </head>
     <body>
         <div class="container">
-            <div class="row">
+            <div class="row m-4 border border-dark">
                 <div class="col text-center">
                     <h1>W.W.S.S.D.</h1>
                     <br/>
@@ -40,42 +40,67 @@ and open the template in the editor.
                     <a href="/powers" class="btn btn-outline-primary btn-lg">Powers</a>
                 </div>
             </div>
-            
-            <div class="row m-4 border border-dark"> <!-- this is for the POST form -->
-                
-            </div>
-            
+
             <div class="row m-4 border border-dark">
-                <div class="text-center col-md-12">
+                <div class="col-md-3">
+                    <h3>About This Location</h3>
+                </div>
+                <table class="col-md-9 table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td th:text="${location.id}"></td>
+                            <td th:text="${location.name}"></td>
+                            <td th:text="${location.address}"></td>
+                            <td th:text="${location.coord.lat}"></td>
+                            <td th:text="${location.coord.lon}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row m-4 border border-dark">
+                <div class="col-md-12">
                     <div class="row m-4">
-                        <h3>All Supers</h3>
+                        <div class="col-md-4">
+                            <h3 class="text-center">Location Description</h3>
+                        </div>
+                        <div class="col-md-8">
+                            <p th:text="${location.description}"></p>
+                        </div>
                     </div>
+                    <hr/>
                     <div class="row m-4">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Details</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="super : ${supers}">
-                                    <td th:text="${super.id}"></td>
-                                    <td th:text="${super.name}"></td>
-                                    <td><a href="#" th:href="${'/super/' + super.id}"</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="text-center col-md-12">
+                            <h3 class="text-center">Sightings At This Location</h3>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Super</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="sighting : ${sightings}">
+                                        <td th:text="${sighting.date}"></td>
+                                        <td th:text="${sighting.spottedSuper.name}"></td>
+                                        <td><a href="#" th:href="${'/sighting/' + sighting.id}">...</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-
-
+            
 
 
 

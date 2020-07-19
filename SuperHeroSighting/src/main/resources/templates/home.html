@@ -6,14 +6,14 @@ and open the template in the editor.
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>WWSSD | Organizations</title>
+        <title>WWSSD | Home</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     </head>
     <body>
         <div class="container">
-            <div class="row">
+            <div class="row m-4 border border-dark">
                 <div class="col text-center">
                     <h1>W.W.S.S.D.</h1>
                     <br/>
@@ -41,7 +41,44 @@ and open the template in the editor.
                 </div>
             </div>
 
-
+            <div class="row m-4 border border-dark"> <!-- This DIV will be used for the about us information -->
+                <div class="col-md-4"> <!-- Title of section here -->
+                    <h3>About Us</h3>
+                </div>
+                <div class="col-md-8"> <!-- Content of Section here -->
+                    <p>Welcome to the World Wide Super Sighting Directory. <br/>
+                        We are a small team whose mission is to keep track of Super related activities across the globe. <br/>
+                        We encourage all who have witnessed a Super related event to share their experience and contribute to this mission. <br/>
+                        Below is a list of recent sightings posted by people just like you!
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row m-4 border border-dark">
+                <div class="col text-center m-3">
+                    <h3>Recent Sighting Reports</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Super</th>
+                                <th>Location</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sighting : ${sightings}">
+                                <td th:text="${sighting.id}"></td>
+                                <td th:text="${sighting.date}"></td>
+                                <td th:text="${sighting.spottedSuper.name}"></td>
+                                <td th:text="${sighting.location.name}"></td>
+                                <td><a href="#" th:href="${'/sighting/' + sighting.id}">...</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
 
 

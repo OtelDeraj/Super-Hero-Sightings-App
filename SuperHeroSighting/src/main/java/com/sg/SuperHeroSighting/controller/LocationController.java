@@ -5,12 +5,12 @@
  */
 package com.sg.SuperHeroSighting.controller;
 
+import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.dto.Sighting;
-import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
+import com.sg.SuperHeroSighting.service.LocationService;
 import com.sg.SuperHeroSighting.service.SightingService;
-import com.sg.SuperHeroSighting.service.SuperService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,35 +26,29 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author Isaia
  */
 @Controller
-public class SuperController {
+public class LocationController {
     
     @Autowired
-    SuperService service;
+    LocationService service;
     
     @Autowired
     SightingService sightServ;
     
-    @GetMapping("/supers")
-    public String displaySupersPage(Model pageModel){
-        List<Super> allSupers = new ArrayList<>();
-        try {
-            allSupers = service.getAllSupers();
-        } catch (EmptyResultException ex) {
-        }
-        pageModel.addAttribute("supers", allSupers);
-        return "supers";
+    @GetMapping("/locations")
+    public String displayLocations(Model pageModel){
+        return "locations";
     }
     
-    @GetMapping("/super/{id}")
-    public String displaySuperDetails(@PathVariable Integer id, Model pageModel) throws InvalidIdException{
-        List<Sighting> sightingsForSuper = new ArrayList<>(); 
-        Super toDisplay = service.getSuperById(id);
+    @GetMapping("/location/{id}")
+    public String displayLocationDetails(@PathVariable Integer id, Model pageModel) throws InvalidIdException{
+        List<Sighting> sightingsForLocation = new ArrayList<>();
+        Location toDisplay = service.getLocationById(id);
         try {
-            sightingsForSuper = sightServ.getSightingsBySuper(toDisplay.getId());
+            sightingsForLocation = sightServ.getSightingsByLoc(toDisplay.getId());
         } catch (EmptyResultException ex) {
         }
-        pageModel.addAttribute("sightings", sightingsForSuper);
-        pageModel.addAttribute("super", toDisplay);
-        return "superdetail";
+        pageModel.addAttribute("sightings", sightingsForLocation);
+        pageModel.addAttribute("location", toDisplay);
+        return "locationdetail";
     }
 }

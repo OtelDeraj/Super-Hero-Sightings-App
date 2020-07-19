@@ -6,7 +6,9 @@
 package com.sg.SuperHeroSighting.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -18,5 +20,12 @@ public class PowerController {
     @GetMapping("/powers")
     public String displayPowersPage(){
         return "powers";
+    }
+    
+    @GetMapping("/power/{id}")
+    public String displayPowerDetails(@PathVariable Integer id, Model pageModel){
+        
+        
+        return "powerdetail";
     }
 }

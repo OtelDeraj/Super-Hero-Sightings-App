@@ -10,6 +10,7 @@ import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
+import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class SightingService { // TODO all the throws in this service will be ch
 
     //  | | Method for adding a Sighting to the database | |
     //  V V                                              V V
-    public Sighting addSighting(Sighting toAdd) throws InvalidEntityException, SightingDaoException, BadUpdateException {
+    public Sighting addSighting(Sighting toAdd) throws InvalidEntityException, SightingDaoException, BadUpdateException{
         validateSighting(toAdd);
         Sighting toReturn = sigDao.addSighting(toAdd);
         return toReturn;
@@ -40,10 +41,12 @@ public class SightingService { // TODO all the throws in this service will be ch
 
     //  | |  This method will be used when retrieving the details of a specific sighting | |
     //  V V                                                                              V V   
-    public Sighting getSightingById(int id) throws SightingDaoException, InvalidEntityException {
-        Sighting toReturn = sigDao.getSightingById(id);
-        validateSighting(toReturn);
-        return toReturn;
+    public Sighting getSightingById(int id) throws InvalidEntityException, InvalidIdException {
+        try {
+            return sigDao.getSightingById(id);
+        } catch (SightingDaoException ex) {
+            throw new InvalidIdException("No Sightings found for given ID");
+        }
     }
     //        ---------------------------------------------    
 

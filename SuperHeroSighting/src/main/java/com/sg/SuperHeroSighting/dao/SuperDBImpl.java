@@ -121,11 +121,13 @@ public class SuperDBImpl implements SuperDao {
     }
 
     private Set<Power> getPowersBySuperId(int id){
-        return new HashSet<>(template.query("SELECT * FROM Super_Powers WHERE superId = ?", new PowerMapper(), id));
+        return new HashSet<>(template.query("SELECT * FROM Powers pw INNER JOIN Super_Powers sp ON pw.powerId = sp.powerId WHERE sp.superId = ?",
+                new PowerMapper(), id));
     }
     
     private Set<Org> getOrgsBySuperId(int id){
-        return new HashSet<>(template.query("SELECT * FROM Affiliations WHERE superId = ?", new OrgMapper(), id));
+        return new HashSet<>(template.query("SELECT * FROM Orgs og INNER JOIN Affiliations af ON og.orgId = af.orgId WHERE af.superId = ?",
+                new OrgMapper(), id));
     }
     
     private void associatePowersToSuper(List<Super> supers){
