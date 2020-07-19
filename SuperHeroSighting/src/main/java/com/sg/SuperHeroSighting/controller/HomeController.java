@@ -34,22 +34,22 @@ public class HomeController {
             allSightings = service.getAllSightings();
         } catch (EmptyResultException ex) {
         }
-        int recentSightingsCount = 5;
+        int recentSightingsCount = 10;
         if(allSightings.size() < recentSightingsCount){
             recentSightingsCount = allSightings.size();
         }
         
-        Sighting[] lastFive = new Sighting[recentSightingsCount];
+        Sighting[] lastTen = new Sighting[recentSightingsCount];
         
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 10; i++){
             if(i < allSightings.size()){
-                lastFive[i] = allSightings.get(allSightings.size() - 1 - i);
+                lastTen[i] = allSightings.get(allSightings.size() - 1 - i);
             } else {
                 break;
             }
         }
         
-        pageModel.addAttribute("sightings", lastFive);
+        pageModel.addAttribute("sightings", lastTen);
         
         return "home";
     }
