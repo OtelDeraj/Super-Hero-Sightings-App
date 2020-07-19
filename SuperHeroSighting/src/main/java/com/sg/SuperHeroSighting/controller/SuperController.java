@@ -9,7 +9,9 @@ import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.dto.Super;
+import com.sg.SuperHeroSighting.dto.SuperVM;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.service.OrgService;
 import com.sg.SuperHeroSighting.service.PowerService;
@@ -93,69 +95,20 @@ public class SuperController {
     
     
     @PostMapping("addsuper")
-    public String addSuper(@Valid Super toAdd, BindingResult result, HttpServletRequest req, Model pageModel) throws InvalidIdException{
-        String[] powerIds = req.getParameterValues("powerId");
-        String[] orgIds = req.getParameterValues("orgId");
-        if(powerIds == null){
-            FieldError error = new FieldError("super", "power", "A Super must have at least one power");
-            result.addError(error);
-        } else {
-            toAdd = setPowers(toAdd, powerIds);
+    public String addSuper(SuperVM toAdd) throws InvalidIdException, InvalidEntityException{
+        Set<Power> allPowers = new HashSet<>();
+        Set<Org> allOrgs = new HashSet<>();
+        for(Power p: toAdd.getPowers()){
+            allPowers.add(powServ.getPowerById(p.getId()));
         }
-        if(orgIds == null){
-            FieldError error = new FieldError("super", "org", "A Super must be affiliated with one or more orgs");
-            result.addError(error);
-        } else {
-            toAdd = setOrgs(toAdd, orgIds);
+        for(Org o: toAdd.getOrgs()){
+            allOrgs.add(orgServ.getOrgById(o.getId()));
         }
-        
-        if(result.hasErrors()) {
-            toAdd = setPowers(toAdd, powerIds);
-            toAdd = setOrgs(toAdd, orgIds);
-            List<Power> powers = new ArrayList<>();
-            List<Org> orgs = new ArrayList<>();
-            try {
-                powers = powServ.getAllPowers();
-            } catch (EmptyResultException ex) {
-            }
-            try {
-                orgs = orgServ.getAllOrgs();
-            } catch (EmptyResultException ex) {
-            }
-            pageModel.addAttribute("super", toAdd);
-            pageModel.addAttribute("powers", powers);
-            pageModel.addAttribute("orgs", orgs);
-            return "addSuper";
-        }
-        
-        
-        service.createSuper(toAdd);
+        toAdd.getToGet().setPowers(allPowers);
+        toAdd.getToGet().setOrgs(allOrgs);
+        service.createSuper(toAdd.getToGet());
         return "redirect:/supers";
     }
 
-    private Super setPowers(Super toAdd, String[] powerIds) {
-        Set<Power> powers = new HashSet<>();
-        if(powerIds != null){
-            for(String idString : powerIds){
-                int id = Integer.parseInt(idString);
-                Power p = powServ.getPowerById(id);
-                powers.add(p);
-            }
-        }
-        toAdd.setPowers(powers);
-        return toAdd;
-    }
     
-    private Super setOrgs(Super toAdd, String[] orgIds) throws InvalidIdException {
-        Set<Org> orgs = new HashSet<>();
-        if(orgIds != null){
-            for(String idString : orgIds){
-                int id = Integer.parseInt(idString);
-                Org o = orgServ.getOrgById(id);
-                orgs.add(o);
-            }
-        }
-        toAdd.setOrgs(orgs);
-        return toAdd;
-    }
 }
