@@ -32,16 +32,21 @@ public class SightingService { // TODO all the throws in this service will be ch
 
     //  | | Method for adding a Sighting to the database | |
     //  V V                                              V V
-    public Sighting addSighting(Sighting toAdd) throws InvalidEntityException, SightingDaoException, BadUpdateException{
+    public Sighting addSighting(Sighting toAdd) throws InvalidEntityException {
         validateSighting(toAdd);
-        Sighting toReturn = sigDao.addSighting(toAdd);
+        Sighting toReturn;
+        try {
+            toReturn = sigDao.addSighting(toAdd);
+        } catch (SightingDaoException | BadUpdateException ex) {
+            throw new InvalidEntityException("Add Sighting Failed");
+        }
         return toReturn;
     }
     //        -------------------------------------------------------------------------
 
     //  | |  This method will be used when retrieving the details of a specific sighting | |
     //  V V                                                                              V V   
-    public Sighting getSightingById(int id) throws InvalidEntityException, InvalidIdException {
+    public Sighting getSightingById(int id) throws InvalidIdException {
         try {
             return sigDao.getSightingById(id);
         } catch (SightingDaoException ex) {
@@ -88,16 +93,24 @@ public class SightingService { // TODO all the throws in this service will be ch
     
     //  | | UpdateSighting feature path | |
     //  V V                             V V
-    public void updateSighting(Sighting toEdit) throws InvalidEntityException, SightingDaoException, BadUpdateException{
+    public void updateSighting(Sighting toEdit) throws InvalidEntityException {
         validateSighting(toEdit);
-        sigDao.updateSighting(toEdit);
+        try {
+            sigDao.updateSighting(toEdit);
+        } catch (SightingDaoException | BadUpdateException ex) {
+            throw new InvalidEntityException("Edit Sighting failed");
+        }
     }
     
     
     //  | | RemoveSighting feature path | |
     //  V V                             V V
-    public void removeSighting(int id) throws SightingDaoException, BadUpdateException{
-        sigDao.removeSighting(id);
+    public void removeSighting(int id) throws InvalidIdException {
+        try {
+            sigDao.removeSighting(id);
+        } catch (SightingDaoException | BadUpdateException ex) {
+            throw new InvalidIdException("Remove Sighting failed due to bad Id");
+        }
     }
     
     

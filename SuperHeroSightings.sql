@@ -56,7 +56,7 @@ create table Affiliations(
 orgId int not null,
 superId int not null,
 foreign key fk_aff_org(orgId)
-references Organizations(orgId),
+references Orgs(orgId),
 foreign key fk_aff_sup(superId)
 references Supers(superId)
 );

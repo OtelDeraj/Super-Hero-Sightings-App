@@ -7,7 +7,9 @@ package com.sg.SuperHeroSighting.service;
 
 import com.sg.SuperHeroSighting.dao.SuperDao;
 import com.sg.SuperHeroSighting.dto.Super;
+import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
+import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.exceptions.InvalidNameException;
 import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
@@ -23,19 +25,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SuperService {
-    
+
     @Autowired
     SuperDao supDao;
 
-    public Super getSuperById(Integer id) throws InvalidIdException {
+    public Super getSuperById(int id) throws InvalidIdException {
         try {
             return supDao.getSuperById(id);
         } catch (SuperDaoException ex) {
             throw new InvalidIdException("No Super found for given ID");
         }
     }
-    
-    public Super getSuperByName(String name) throws InvalidNameException{
+
+    public Super getSuperByName(String name) throws InvalidNameException {
         try {
             return supDao.getSuperByName(name);
         } catch (SuperDaoException ex) {
@@ -51,12 +53,55 @@ public class SuperService {
         }
     }
 
-    public void createSuper(Super toAdd) {
-        validateSuper(toAdd);
+    public List<Super> getSupersByPowerId(int id) throws InvalidIdException {
+        try {
+            return supDao.getSupersByPowerId(id);
+        } catch (SuperDaoException ex) {
+            throw new InvalidIdException("No Supers found for given power Id");
+        }
     }
 
-    private void validateSuper(Super toAdd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Super> getSupersByOrgId(int id) throws InvalidIdException {
+        try {
+            return supDao.getSupersByOrgId(id);
+        } catch (SuperDaoException ex) {
+            throw new InvalidIdException("No Supers found for given power Id");
+        }
+    }
+
+    public Super createSuper(Super toAdd) throws InvalidEntityException {
+        validateSuper(toAdd);
+        try {
+            return supDao.createSuper(toAdd);
+        } catch (SuperDaoException | BadUpdateException ex) {
+            throw new InvalidEntityException("Create Super entity was invalid");
+        }
     }
     
+    public void editSuper(Super toEdit) throws InvalidEntityException {
+        validateSuper(toEdit);
+        try {
+            supDao.editSuper(toEdit);
+        } catch (SuperDaoException | BadUpdateException ex) {
+            throw new InvalidEntityException("Edit Super entity was invalid");
+        }
+    }
+    
+    public void removeSuper(int id) throws InvalidIdException {
+        try {
+            supDao.removeSuper(id);
+        } catch (SuperDaoException | BadUpdateException ex) {
+            throw new InvalidIdException("Remove Super failed due to invalid Id");
+        }
+    }
+
+    private void validateSuper(Super toCheck) throws InvalidEntityException {
+        if(toCheck == null
+                || toCheck.getName().isBlank() || toCheck.getName().trim().length() > 30 
+                || toCheck.getDescription().isBlank() || toCheck.getDescription().trim().length() > 255
+                || toCheck.getOrgs().isEmpty() || toCheck.getPowers().isEmpty()){
+            throw new InvalidEntityException("Invalid Entity.");
+        } 
+    }
+
 }
