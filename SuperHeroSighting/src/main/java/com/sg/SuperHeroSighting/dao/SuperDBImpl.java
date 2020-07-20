@@ -106,7 +106,7 @@ public class SuperDBImpl implements SuperDao {
     @Override
     public void editSuper(Super toEdit) throws BadUpdateException, InvalidEntityException {
         validateSuperData(toEdit);
-        int affectedRows = template.update("UPDATE Supers SET name = ?, description = ?, WHERE superId = ?",
+        int affectedRows = template.update("UPDATE Supers SET name = ?, description = ? WHERE superId = ?",
                 toEdit.getName(), toEdit.getDescription(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows updated");

@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>WWSSD | Supers</title>
+        <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -40,16 +40,16 @@ and open the template in the editor.
                     <a href="/powers" class="btn btn-outline-primary btn-lg">Powers</a>
                 </div>
             </div>
-
             <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
-                    <form id="superForm" action="addsuper" method="POST">
+                    <form id="superFormEdit" action="/editsuper" method="POST">
+                        <input type="hidden" th:value="${super.id}" name="toGet.id"/>
                         <div class="form-group row">
                             <div class="col-3">
                                 <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${super.name}" type="text" name="toGet.name" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -57,14 +57,17 @@ and open the template in the editor.
                                 <label for="toGet.description">Description: </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" name="toGet.description" class="form-control"/>
+                                <input th:value="${super.description}" type="text" name="toGet.description" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-6">
                                 <label for="powerList">Powers: </label>
                                 <div th:each="power : ${powers}">
-                                    <input name="powerIds" type="checkbox" th:value="${power.id}"/>
+                                    <input name="powerIds"
+                                           type="checkbox"
+                                           th:checked="${super.powers.contains(power)}"
+                                           th:value="${power.id}"/>
                                     <span th:text="${power.name}"></span>
                                 </div>
                             </div>
@@ -73,7 +76,10 @@ and open the template in the editor.
 
 
                                 <div th:each="org : ${orgs}">
-                                    <input name="orgIds" type="checkbox" th:value="${org.id}"/>
+                                    <input name="orgIds"
+                                           type="checkbox" 
+                                           th:checked="${super.orgs.contains(org)}"
+                                           th:value="${org.id}"/>
                                     <span th:text="${org.name}"></span>
                                 </div>
                             </div>
@@ -82,62 +88,18 @@ and open the template in the editor.
                         <input type="submit"/>
                     </form>
                 </div>
-            </div>
-
-            <div class="row m-4 border border-dark">
-                <div class="text-center col-md-12">
-                    <div class="row m-4">
-                        <h3>All Supers</h3>
-                    </div>
-                    <div class="row m-4">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Details</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="super : ${supers}">
-                                    <td th:text="${super.id}"></td>
-                                    <td th:text="${super.name}"></td>
-                                    <td><a href="#" th:href="${'/super/' + super.id}">...</a></td>
-                                    <td><a href="#" th:href="${'/editsuper/' + super.id}">Edit</a></td>
-                                    <td><a href="#" th:href="${'/deletesuper/' + super.id}">Delete</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
 
 
 
 
 
+
+
+
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         </div>
-
-
-
-
-
-
-
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        
-        <script>
-            $(document).ready(function() {
-                
-              
-                
-            });
-            
-        </script>
     </body>
 </html>

@@ -112,4 +112,35 @@ public class SuperController {
     }
 
     
+    @GetMapping("editsuper/{id}")
+    public String displayEditSuper(Model pageModel, @PathVariable Integer id) throws InvalidIdException, EmptyResultException{
+        Super toEdit = service.getSuperById(id);
+        pageModel.addAttribute("super", toEdit);
+        pageModel.addAttribute("powers", powServ.getAllPowers());
+        pageModel.addAttribute("orgs", orgServ.getAllOrgs());
+        return "editsuper";
+    }
+    
+    @PostMapping("editsuper")
+    public String editSuper(SuperVM toEdit) throws InvalidIdException, InvalidEntityException{
+        Set<Power> allPowers = new HashSet<>();
+        Set<Org> allOrgs = new HashSet<>();
+        for(Integer p: toEdit.getPowerIds()){
+            allPowers.add(powServ.getPowerById(p));
+        }
+        for(Integer o: toEdit.getOrgIds()){
+            allOrgs.add(orgServ.getOrgById(o));
+        }
+        toEdit.getToGet().setPowers(allPowers);
+        toEdit.getToGet().setOrgs(allOrgs);
+        service.editSuper(toEdit.getToGet());
+        return "redirect:/supers";
+    }
+    
+    @GetMapping("/deletesuper/{id}")
+    public String deleteSuperById(@PathVariable Integer id) throws InvalidIdException{
+        service.removeSuper(id);
+        return "redirect:/supers";
+    }
+    
 }
