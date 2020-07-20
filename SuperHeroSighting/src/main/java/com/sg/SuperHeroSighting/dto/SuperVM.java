@@ -12,8 +12,8 @@ package com.sg.SuperHeroSighting.dto;
 public class SuperVM {
     
     private Super toGet;
-    private Power[] powers;
-    private Org[] orgs;
+    private Integer[] powerIds;
+    private Integer[] orgIds;
 
     /**
      * @return the toGet
@@ -32,28 +32,28 @@ public class SuperVM {
     /**
      * @return the powers
      */
-    public Power[] getPowers() {
-        return powers;
+    public Integer[] getPowerIds() {
+        return powerIds;
     }
 
     /**
      * @param powers the powers to set
      */
-    public void setPowers(Power[] powers) {
-        this.powers = powers;
+    public void setPowerIds(Integer[] powerIds) {
+        this.powerIds = powerIds;
     }
 
     /**
      * @return the orgs
      */
-    public Org[] getOrgs() {
-        return orgs;
+    public Integer[] getOrgIds() {
+        return orgIds;
     }
 
     /**
      * @param orgs the orgs to set
      */
-    public void setOrgs(Org[] orgs) {
-        this.orgs = orgs;
+    public void setOrgIds(Integer[] orgIds) {
+        this.orgIds = orgIds;
     }
 }

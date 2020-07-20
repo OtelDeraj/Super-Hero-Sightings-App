@@ -94,6 +94,12 @@ public class SuperDBImpl implements SuperDao {
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
+        for(Org o : toAdd.getOrgs()){
+            template.update("INSERT INTO Affiliations(orgId, superId) VALUES(?, ?)", o.getId(), toAdd.getId());
+        }
+        for(Power p: toAdd.getPowers()){
+            template.update("INSERT INTO Super_Powers(powerId, superId) VALUES(?, ?)", p.getId(), toAdd.getId());
+        }
         return toAdd;
     }
 
@@ -104,6 +110,14 @@ public class SuperDBImpl implements SuperDao {
                 toEdit.getName(), toEdit.getDescription(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows updated");
+        }
+        template.update("DELETE FROM Affiliations WHERE superId = ?", toEdit.getId());
+        for(Org o : toEdit.getOrgs()){
+            template.update("INSERT INTO Affiliations(orgId, superId) VALUES(?, ?)", o.getId(), toEdit.getId());
+        }
+        template.update("DELETE FROM Super_Powers WHERE superId = ?", toEdit.getId());
+        for(Power p: toEdit.getPowers()){
+            template.update("INSERT INTO Super_Powers(powerId, superId) VALUES(?, ?)", p.getId(), toEdit.getId());
         }
     }
 

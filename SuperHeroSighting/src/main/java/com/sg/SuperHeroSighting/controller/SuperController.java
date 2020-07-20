@@ -33,6 +33,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -98,11 +99,11 @@ public class SuperController {
     public String addSuper(SuperVM toAdd) throws InvalidIdException, InvalidEntityException{
         Set<Power> allPowers = new HashSet<>();
         Set<Org> allOrgs = new HashSet<>();
-        for(Power p: toAdd.getPowers()){
-            allPowers.add(powServ.getPowerById(p.getId()));
+        for(Integer p: toAdd.getPowerIds()){
+            allPowers.add(powServ.getPowerById(p));
         }
-        for(Org o: toAdd.getOrgs()){
-            allOrgs.add(orgServ.getOrgById(o.getId()));
+        for(Integer o: toAdd.getOrgIds()){
+            allOrgs.add(orgServ.getOrgById(o));
         }
         toAdd.getToGet().setPowers(allPowers);
         toAdd.getToGet().setOrgs(allOrgs);
