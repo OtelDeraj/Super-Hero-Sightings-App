@@ -5,11 +5,15 @@
  */
 package com.sg.SuperHeroSighting.controller;
 
+import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.dto.Sighting;
+import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
+import com.sg.SuperHeroSighting.service.LocationService;
 import com.sg.SuperHeroSighting.service.SightingService;
+import com.sg.SuperHeroSighting.service.SuperService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,14 +34,26 @@ public class SightingController {
     @Autowired
     SightingService service;
     
+    @Autowired
+    SuperService supServ;
+    
+    @Autowired
+    LocationService locServ;
+    
     @GetMapping("/sightings")
     public String displaySightingPage(Model pageModel){
         List<Sighting> allSightings = new ArrayList<>();
+        List<Super> allSupers = new ArrayList<>();
+        List<Location> allLocations = new ArrayList<>();
         try {
             allSightings = service.getAllSightings();
+            allSupers = supServ.getAllSupers();
+            allLocations = locServ.getAllLocations();
         } catch (EmptyResultException ex) {
         }
         
+        pageModel.addAttribute("locations", allLocations);
+        pageModel.addAttribute("supers", allSupers);
         pageModel.addAttribute("sightings", allSightings);
         return "sightings";
     }
@@ -48,4 +64,6 @@ public class SightingController {
         pageModel.addAttribute("sighting", toDisplay);
         return "sightdetail";
     }
+    
+    
 }

@@ -41,6 +41,94 @@ and open the template in the editor.
                 </div>
             </div> 
             
+            <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
+                <div class="col-md-12">
+                    <form id="locationForm" action="/addlocation" method="POST">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" name="toGet.name" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.description">Description: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" name="toGet.description" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.address">Address: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="text" name="toGet.address" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.coord.lat">Latitude: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" name="toGet.coord.lat" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.coord.lon">Longitude: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="number" name="toGet.coord.lon" class="form-control"/>
+                            </div>
+                        </div>
+
+                        <input type="submit"/>
+                    </form>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="row m-4 border border-dark">
+                <div class="text-center col-md-12">
+                    <div class="row m-4">
+                        <h3>All Locations</h3>
+                    </div>
+                    <div class="row m-4">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Details</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="location : ${locations}">
+                                    <td th:text="${location.id}"></td>
+                                    <td th:text="${location.name}"></td>
+                                    <td th:text="${location.address}"></td>
+                                    <td th:text="${location.coord.lat}"></td>
+                                    <td th:text="${location.coord.lon}"></td>
+                                    <td><a href="#" th:href="${'/location/' + location.id}">...</a></td>
+                                    <td><a href="#" th:href="${'/editlocation/' + location.id}">Edit</a></td>
+                                    <td><a href="#" th:href="${'/deletelocation/' + location.id}">Delete</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             
             
             

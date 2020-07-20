@@ -54,7 +54,7 @@ public class PowerDBImpl implements PowerDao {
 
     @Override
     public List<Power> getPowersForSuperId(int id) throws PowerDaoException {
-        List<Power> powers = template.query("SELECT * FROM Super_Powers WHERE superId = ?", new PowerMapper(), id);
+        List<Power> powers = template.query("SELECT * FROM Powers pw INNER JOIN Super_Powers sp ON pw.powerId = sp.powerId WHERE sp.superId = ?", new PowerMapper(), id);
         if (powers.isEmpty()) {
             throw new PowerDaoException("No powers found for that super id");
         }

@@ -40,10 +40,14 @@ and open the template in the editor.
                     <a href="/powers" class="btn btn-outline-primary btn-lg">Powers</a>
                 </div>
             </div>
+            
+            <div class="row m-4 border border-dark"> <!-- This is where the pages message will be, informing the user of what the page contains and what the form means -->
+                <p>Page Description here at some point</p>
+            </div>
 
             <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
-                    <form id="superForm" action="addsuper" method="POST">
+                    <form id="superForm" action="/addsuper" method="POST">
                         <div class="form-group row">
                             <div class="col-3">
                                 <label for="toGet.name" class="col-3 col-form-lable">Name: </label>

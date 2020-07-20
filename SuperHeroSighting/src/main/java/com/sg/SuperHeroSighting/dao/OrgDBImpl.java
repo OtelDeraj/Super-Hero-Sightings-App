@@ -60,7 +60,7 @@ public class OrgDBImpl implements OrgDao {
 
     @Override
     public List<Org> getOrgsForSuperId(int id) throws OrgDaoException {
-        List<Org> orgsForSuper = template.query("SELECT * FROM Affiliations WHERE superId = ?", new OrgMapper(), id);
+        List<Org> orgsForSuper = template.query("SELECT * FROM Orgs og INNER JOIN Affiliations af ON og.orgId = af.orgId WHERE af.superId = ?", new OrgMapper(), id);
         if (orgsForSuper.isEmpty()) {
             throw new OrgDaoException("No orgs found for given super id");
         }
@@ -79,6 +79,9 @@ public class OrgDBImpl implements OrgDao {
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
+        for(Super s: toAdd.getSupers()){
+            template.update("INSERT INTO Affiliations(orgId, superId) VALUES(?, ?)", toAdd.getId(), s.getId());
+        }
         return toAdd;
     }
 
@@ -89,6 +92,10 @@ public class OrgDBImpl implements OrgDao {
                 toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(), toEdit.getPhone(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows affected by update");
+        }
+        template.update("DELETE FROM Affiliations WHERE orgId = ?", toEdit.getId());
+        for(Super s: toEdit.getSupers()){
+            template.update("INSERT INTO Affiliations(orgId, superId) VALUES(?, ?)", toEdit.getId(), s.getId());
         }
     }
 

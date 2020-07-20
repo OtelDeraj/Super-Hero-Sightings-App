@@ -12,7 +12,7 @@ package com.sg.SuperHeroSighting.dto;
 public class OrgVM {
     
     private Org toGet;
-    private Super[] supers;
+    private Integer[] superIds;
 
     /**
      * @return the toGet
@@ -31,15 +31,15 @@ public class OrgVM {
     /**
      * @return the supers
      */
-    public Super[] getSupers() {
-        return supers;
+    public Integer[] getSuperIds() {
+        return superIds;
     }
 
     /**
-     * @param supers the supers to set
+     * @param superIds
      */
-    public void setSupers(Super[] supers) {
-        this.supers = supers;
+    public void setSuperIds(Integer[] superIds) {
+        this.superIds = superIds;
     }
     
 }

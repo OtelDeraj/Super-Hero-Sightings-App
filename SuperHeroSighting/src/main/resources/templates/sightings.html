@@ -41,18 +41,63 @@ and open the template in the editor.
                 </div>
             </div>
 
+            <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
+                <div class="col-md-12">
+                    <form id="sightingForm" action="/addsighting" method="POST">
+                        <div class="form-group row">
+                            <div class="col-3">
+                                <label for="toGet.date" class="col-3 col-form-lable">Date: </label>
+                            </div>
+                            <div class="col-9">
+                                <input type="date" name="toGet.date" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <select name="toGet.spottedSuper.id">
+                                    <option th:each="super : ${supers}" th:value="${super.id}"
+                                            th:text="${super.name}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select name="toGet.location.id">
+                                    <option th:each="location : ${locations}" th:value="${location.id}"
+                                            th:text="${location.name}"></option>
+                                </select>
+                            </div>
+                        </div>
 
+                        <input type="submit"/>
+                    </form>
+                </div>
+            </div>
 
-
-
+            <div class="row m-4 border border-dark">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Sighting Date</th>
+                            <th>Location</th>
+                            <th>Details</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="sighting : ${sightings}">
+                            <td th:text="${sighting.id}"></td>
+                            <td th:text="${sighting.date}"></td>
+                            <td th:text="${sighting.location.name}"></td>
+                            <td><a href="#" th:href="${'/sighting/' + sighting.id}">...</a></td>
+                            <td><a href="#" th:href="${'/editsighting/' + sighting.id}">Edit</a></td>
+                            <td><a href="#" th:href="${'/deletesighting/ + sighting.id'}">Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
-
-
-
-
-
-
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

@@ -78,11 +78,13 @@ and open the template in the editor.
                                 <thead>
                                     <tr>
                                         <th>Power(s)</th>
+                                        <th>Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="power : ${super.powers}">
                                         <td th:text="${power.name}"></td>
+                                        <td><a href="#" th:href="${'/power/' + power.id}">...</a></td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -64,7 +64,7 @@ public class SuperDBImpl implements SuperDao {
 
     @Override
     public List<Super> getSupersByPowerId(int id) throws SuperDaoException {
-        List<Super> supersByPower = template.query("SELECT * FROM Super_Powers WHERE powerId = ?", new SuperMapper(), id);
+        List<Super> supersByPower = template.query("SELECT * FROM Supers su INNER JOIN Super_Powers sp ON su.superId = sp.superId WHERE sp.powerId = ?", new SuperMapper(), id);
         if (supersByPower.isEmpty()) {
             throw new SuperDaoException("No supers found for given power id");
         }
@@ -75,7 +75,7 @@ public class SuperDBImpl implements SuperDao {
 
     @Override
     public List<Super> getSupersByOrgId(int id) throws SuperDaoException {
-        List<Super> supersByOrg = template.query("SELECT * FROM Affiliations WHERE orgId", new SuperMapper(), id);
+        List<Super> supersByOrg = template.query("SELECT * FROM Supers su INNER JOIN Affiliations af ON su.superId = af.superId WHERE af.orgId", new SuperMapper(), id);
         if (supersByOrg.isEmpty()) {
             throw new SuperDaoException("No supers found for given org id");
         }

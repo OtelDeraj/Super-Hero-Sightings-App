@@ -56,9 +56,9 @@ public class SuperController {
     
     @GetMapping("/supers")
     public String displaySupersPage(Model pageModel){
-        Super toAdd = new Super();
-        toAdd.setOrgs(new HashSet<>());
-        toAdd.setPowers(new HashSet<>());
+//        Super toAdd = new Super();
+//        toAdd.setOrgs(new HashSet<>());
+//        toAdd.setPowers(new HashSet<>());
         List<Super> allSupers = new ArrayList<>();
         List<Org> allOrgs = new ArrayList<>();
         List<Power> allPowers = new ArrayList<>();
@@ -74,7 +74,7 @@ public class SuperController {
             allPowers = powServ.getAllPowers();
         } catch (EmptyResultException ex) {
         }
-        pageModel.addAttribute("newsuper", toAdd);
+//        pageModel.addAttribute("newsuper", toAdd);
         pageModel.addAttribute("powers", allPowers);
         pageModel.addAttribute("orgs", allOrgs);
         pageModel.addAttribute("supers", allSupers);
@@ -82,9 +82,13 @@ public class SuperController {
     }
     
     @GetMapping("/super/{id}")
-    public String displaySuperDetails(@PathVariable Integer id, Model pageModel) throws InvalidIdException{
+    public String displaySuperDetails(@PathVariable Integer id, Model pageModel) {
         List<Sighting> sightingsForSuper = new ArrayList<>(); 
-        Super toDisplay = service.getSuperById(id);
+        Super toDisplay = new Super();
+        try {
+            toDisplay = service.getSuperById(id);
+        } catch (InvalidIdException ex) {
+        }
         try {
             sightingsForSuper = sightServ.getSightingsBySuper(toDisplay.getId());
         } catch (EmptyResultException ex) {
@@ -114,10 +118,22 @@ public class SuperController {
     
     @GetMapping("editsuper/{id}")
     public String displayEditSuper(Model pageModel, @PathVariable Integer id) throws InvalidIdException, EmptyResultException{
+        List<Org> allOrgs = new ArrayList<>();
+        List<Super> allSupers = new ArrayList<>();
         Super toEdit = service.getSuperById(id);
+        try{
+            allOrgs = orgServ.getAllOrgs();
+            allOrgs.forEach(o -> o.setSupers(null));
+        } catch(EmptyResultException ex){
+        }
+        try {
+            allSupers = service.getAllSupers();
+        } catch (EmptyResultException ex) {
+        }
         pageModel.addAttribute("super", toEdit);
+        pageModel.addAttribute("supers", allSupers);
         pageModel.addAttribute("powers", powServ.getAllPowers());
-        pageModel.addAttribute("orgs", orgServ.getAllOrgs());
+        pageModel.addAttribute("orgs", allOrgs);
         return "editsuper";
     }
     
