@@ -64,7 +64,14 @@ public class SightingService { // TODO all the throws in this service will be ch
             throw new EmptyResultException("Returned no sightings");
         }
     }
-
+    
+    public List<Sighting> getLastTenSightings() throws EmptyResultException{
+        try {
+            return sigDao.getLastTenSightings();
+        } catch (SightingDaoException ex) {
+            throw new EmptyResultException("Returned no sightings in lastTen method");
+        }
+    }
     public List<Sighting> getSightingsBySuper(int id) throws EmptyResultException {
         try {
             return sigDao.getSightingsBySuperId(id);
@@ -121,7 +128,7 @@ public class SightingService { // TODO all the throws in this service will be ch
     //  V V                                  V V 
     private void validateSighting(Sighting toValidate) throws InvalidEntityException {
         if (toValidate.getDate() == null
-                || toValidate.getDate().before(new Date())
+                || toValidate.getDate().after(new Date())
                 || toValidate.getLocation() == null
                 || toValidate.getSpottedSuper() == null) {
             throw new InvalidEntityException("Sighting Fields cannot be null");

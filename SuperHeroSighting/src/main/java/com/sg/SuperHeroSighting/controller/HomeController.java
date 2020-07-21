@@ -29,26 +29,11 @@ public class HomeController {
     
     @GetMapping("/")
     public String displayHome(Model pageModel){
-        List<Sighting> allSightings = new ArrayList<>();
+        List<Sighting> lastTen = new ArrayList<>();
         try {
-            allSightings = service.getAllSightings();
+            lastTen = service.getLastTenSightings();
         } catch (EmptyResultException ex) {
         }
-        int recentSightingsCount = 10;
-        if(allSightings.size() < recentSightingsCount){
-            recentSightingsCount = allSightings.size();
-        }
-        
-        Sighting[] lastTen = new Sighting[recentSightingsCount];
-        
-        for(int i = 0; i < 10; i++){
-            if(i < allSightings.size()){
-                lastTen[i] = allSightings.get(allSightings.size() - 1 - i);
-            } else {
-                break;
-            }
-        }
-        
         pageModel.addAttribute("sightings", lastTen);
         
         return "home";

@@ -69,7 +69,14 @@ public class SightingDBImpl implements SightingDao {
         if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found");
         return toReturn;
     }
-
+    
+    @Override
+    public List<Sighting> getLastTenSightings() throws SightingDaoException {
+        List<Sighting> toReturn = template.query("SELECT * FROM Sightings ORDER BY sightDate DESC LIMIT 10", new SightingMapper());
+        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found");
+        return toReturn;
+    }
+    
     @Override
     public Sighting addSighting(Sighting toAdd) throws SightingDaoException, InvalidEntityException {
         validateSightingData(toAdd);
@@ -111,6 +118,8 @@ public class SightingDBImpl implements SightingDao {
             throw new InvalidEntityException("Sighting fields cannot be null");
         }
     }
+
+    
 
     private class SightingMapper implements RowMapper<Sighting> {
 

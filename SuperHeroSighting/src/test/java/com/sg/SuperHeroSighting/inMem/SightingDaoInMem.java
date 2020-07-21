@@ -61,5 +61,10 @@ public class SightingDaoInMem implements SightingDao{
     public void removeSighting(int id) throws SightingDaoException, BadUpdateException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<Sighting> getLastTenSightings() throws SightingDaoException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

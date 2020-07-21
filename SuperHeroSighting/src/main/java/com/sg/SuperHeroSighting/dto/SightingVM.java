@@ -12,6 +12,7 @@ package com.sg.SuperHeroSighting.dto;
 public class SightingVM {
  
     private Sighting toGet;
+    private String sDate;
 
     /**
      * @return the toGet
@@ -25,5 +26,19 @@ public class SightingVM {
      */
     public void setToGet(Sighting toGet) {
         this.toGet = toGet;
+    }
+
+    /**
+     * @return the sDate
+     */
+    public String getsDate() {
+        return sDate;
+    }
+
+    /**
+     * @param sDate the sDate to set
+     */
+    public void setsDate(String sDate) {
+        this.sDate = sDate;
     }
 }

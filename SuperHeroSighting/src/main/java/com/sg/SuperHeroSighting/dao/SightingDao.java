@@ -28,6 +28,8 @@ public interface SightingDao {
     
     public List<Sighting> getAllSightings() throws SightingDaoException;
     
+    public List<Sighting> getLastTenSightings() throws SightingDaoException;
+    
     public Sighting addSighting(Sighting toAdd) throws SightingDaoException, BadUpdateException, InvalidEntityException;
     
     public void updateSighting(Sighting toEdit) throws SightingDaoException, BadUpdateException, InvalidEntityException;
