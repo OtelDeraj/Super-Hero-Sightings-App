@@ -24,7 +24,7 @@ foreign key fk_sp_super(superId)
 references Supers(superId)
 );
 
-create table Organizations(
+create table Orgs(
 orgId int primary key auto_increment,
 `name` varchar(50) not null unique,
 `description` varchar(255) not null,
@@ -36,7 +36,7 @@ create table Affiliations(
 orgId int not null,
 superId int not null,
 foreign key fk_aff_org(orgId)
-references Organizations(orgId),
+references Orgs(orgId),
 foreign key fk_aff_sup(superId)
 references Supers(superId)
 );

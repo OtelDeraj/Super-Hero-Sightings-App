@@ -93,9 +93,9 @@ insert into sightings(sightDate, superId, locId)
 values
 ('2020-12-08', 1, 1);
 
-select * from powers pw left outer join super_powers sp on pw.powerId = sp.powerId where sp.superId = 1;
+-- select * from powers pw left outer join super_powers sp on pw.powerId = sp.powerId where sp.superId = 1;
 
-select * from Orgs og inner join affiliations af on og.orgId = af.orgId where af.superId = 1;
+-- select * from Orgs og inner join affiliations af on og.orgId = af.orgId where af.superId = 1;
 
-
+-- SELECT * FROM Sightings ORDER BY sightDate DESC LIMIT 10;
 

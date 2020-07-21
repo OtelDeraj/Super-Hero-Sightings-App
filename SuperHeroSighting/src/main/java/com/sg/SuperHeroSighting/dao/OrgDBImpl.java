@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
 import java.sql.ResultSet;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -69,13 +71,17 @@ public class OrgDBImpl implements OrgDao {
     }
 
     @Override
-    public Org createOrg(Org toAdd) throws BadUpdateException, InvalidEntityException {
+    public Org createOrg(Org toAdd) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateOrgData(toAdd);
+        try{
         int affectedRows = template.update("INSERT INTO Orgs(name, description, address, phone) "
                 + "VALUES(?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(),
                 toAdd.getAddress(), toAdd.getPhone());
         if (affectedRows < 1) {
             throw new BadUpdateException("Failed to add Org to database");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
@@ -86,12 +92,16 @@ public class OrgDBImpl implements OrgDao {
     }
 
     @Override
-    public void editOrg(Org toEdit) throws BadUpdateException, InvalidEntityException {
+    public void editOrg(Org toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateOrgData(toEdit);
+        try{
         int affectedRows = template.update("UPDATE Orgs SET name = ?, description = ?, address = ?, phone = ? WHERE orgId = ?",
                 toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(), toEdit.getPhone(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows affected by update");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
         }
         template.update("DELETE FROM Affiliations WHERE orgId = ?", toEdit.getId());
         for(Super s: toEdit.getSupers()){

@@ -7,6 +7,7 @@ package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
 import java.util.List;
@@ -25,9 +26,9 @@ public interface OrgDao {
     
     public List<Org> getOrgsForSuperId(int id) throws OrgDaoException;
     
-    public Org createOrg(Org toAdd) throws OrgDaoException, BadUpdateException, InvalidEntityException;
+    public Org createOrg(Org toAdd) throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException;
     
-    public void editOrg(Org toEdit) throws OrgDaoException, BadUpdateException, InvalidEntityException;
+    public void editOrg(Org toEdit) throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException;
     
     public void removeOrg(int id) throws OrgDaoException, BadUpdateException;
 }

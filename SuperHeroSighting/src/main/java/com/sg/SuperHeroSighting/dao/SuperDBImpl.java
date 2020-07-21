@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -75,7 +77,7 @@ public class SuperDBImpl implements SuperDao {
 
     @Override
     public List<Super> getSupersByOrgId(int id) throws SuperDaoException {
-        List<Super> supersByOrg = template.query("SELECT * FROM Supers su INNER JOIN Affiliations af ON su.superId = af.superId WHERE af.orgId", new SuperMapper(), id);
+        List<Super> supersByOrg = template.query("SELECT * FROM Supers su INNER JOIN Affiliations af ON su.superId = af.superId WHERE af.orgId = ?", new SuperMapper(), id);
         if (supersByOrg.isEmpty()) {
             throw new SuperDaoException("No supers found for given org id");
         }
@@ -85,12 +87,16 @@ public class SuperDBImpl implements SuperDao {
     }
 
     @Override
-    public Super createSuper(Super toAdd) throws BadUpdateException, InvalidEntityException {
+    public Super createSuper(Super toAdd) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateSuperData(toAdd);
+        try{
         int affectedRows = template.update("INSERT INTO Supers(name, description) VALUES(?, ?)",
                 toAdd.getName(), toAdd.getDescription());
         if (affectedRows == 0) {
             throw new BadUpdateException("Failed to create new row in databse");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
@@ -104,12 +110,16 @@ public class SuperDBImpl implements SuperDao {
     }
 
     @Override
-    public void editSuper(Super toEdit) throws BadUpdateException, InvalidEntityException {
+    public void editSuper(Super toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateSuperData(toEdit);
+        try{
         int affectedRows = template.update("UPDATE Supers SET name = ?, description = ? WHERE superId = ?",
                 toEdit.getName(), toEdit.getDescription(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows updated");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists");
         }
         template.update("DELETE FROM Affiliations WHERE superId = ?", toEdit.getId());
         for(Org o : toEdit.getOrgs()){
@@ -125,6 +135,7 @@ public class SuperDBImpl implements SuperDao {
     public void removeSuper(int id) throws BadUpdateException {
         template.update("DELETE FROM Affiliations WHERE superId = ?", id);
         template.update("DELETE FROM Super_Powers WHERE superId = ?", id);
+        template.update("DELETE FROM Sightings WHERE superId = ?", id);
         int affectedRows = template.update("DELETE FROM Supers WHERE superId = ?", id);
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows removed");

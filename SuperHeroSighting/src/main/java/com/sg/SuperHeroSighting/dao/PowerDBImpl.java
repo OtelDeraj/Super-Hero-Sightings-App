@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -62,11 +64,15 @@ public class PowerDBImpl implements PowerDao {
     }
 
     @Override
-    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, InvalidEntityException {
+    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         validatePowerData(toAdd);
+        try{
         int affectedRows = template.update("INSERT INTO Powers(name) VALUES(?)", toAdd.getName());
         if (affectedRows < 1) {
             throw new BadUpdateException("Failed to add power to database");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
@@ -74,11 +80,15 @@ public class PowerDBImpl implements PowerDao {
     }
 
     @Override
-    public void editPower(Power toEdit) throws BadUpdateException, InvalidEntityException {
+    public void editPower(Power toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validatePowerData(toEdit);
+        try{
         int affectedRows = template.update("UPDATE Powers SET name = ? WHERE powerId = ?", toEdit.getName(), toEdit.getId());
         if (affectedRows < 1) {
             throw new BadUpdateException("No rows updated");
+        }
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
         }
     }
 

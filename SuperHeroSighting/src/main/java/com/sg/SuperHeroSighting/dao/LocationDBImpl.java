@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Coord;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
 import java.awt.Point;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -62,25 +64,33 @@ public class LocationDBImpl implements LocationDao {
     }
 
     @Override
-    public Location createLocation(Location toAdd) throws LocationDaoException, InvalidEntityException {
+    public Location createLocation(Location toAdd) throws LocationDaoException, InvalidEntityException, DuplicateNameException {
         validateLocationData(toAdd);
+        try{
         int affectedRows = template.update("INSERT INTO Locations(name, description, address, lat, lon)"
                 + "VALUES(?, ?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(), toAdd.getAddress(),
                 toAdd.getCoord().getLat(), toAdd.getCoord().getLon());
         if(affectedRows < 1) throw new LocationDaoException("Failed to add location");
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
+        }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
         return toAdd;
     }
 
     @Override
-    public void editLocation(Location toEdit) throws BadUpdateException, InvalidEntityException {
+    public void editLocation(Location toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateLocationData(toEdit);
+        try{
         int affectedRows = template.update("UPDATE Locations SET name = ?, description = ?, address = ?,"
                 + " lat = ?, lon = ? WHERE locId = ?", toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(),
                 toEdit.getCoord().getLat(), toEdit.getCoord().getLon(), toEdit.getId());
         if(affectedRows < 1) throw new BadUpdateException("No locations updated");
         if(affectedRows > 1) throw new BadUpdateException("More than one location updated");
+        } catch(DuplicateKeyException ex){
+            throw new DuplicateNameException("Given name already exists.");
+        }
     }
 
     @Override

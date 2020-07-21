@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.dao;
 import com.sg.SuperHeroSighting.dto.Coord;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
 import java.util.List;
@@ -28,9 +29,9 @@ public interface LocationDao {
     
     public List<Location> getAllLocations() throws LocationDaoException;
     
-    public Location createLocation(Location toAdd) throws LocationDaoException, BadUpdateException, InvalidEntityException;
+    public Location createLocation(Location toAdd) throws LocationDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException;
     
-    public void editLocation(Location toEdit) throws LocationDaoException, BadUpdateException, InvalidEntityException;
+    public void editLocation(Location toEdit) throws LocationDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException;
     
     public void removeLocation(int id) throws LocationDaoException, BadUpdateException;
     
