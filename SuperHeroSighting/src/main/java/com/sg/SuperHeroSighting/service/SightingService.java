@@ -12,11 +12,8 @@ import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,11 +125,12 @@ public class SightingService { // TODO all the throws in this service will be ch
     //  V V                                  V V 
     private void validateSighting(Sighting toValidate) throws InvalidEntityException {
         if (toValidate.getDate() == null
-                || toValidate.getDate().after(new Date())
                 || toValidate.getLocation() == null
                 || toValidate.getSpottedSuper() == null) {
-            throw new InvalidEntityException("Sighting Fields cannot be null");
+            throw new InvalidEntityException("Please make sure all fields have been entered.");
         }
+        if(toValidate.getDate().after(new Date())) throw new InvalidEntityException("Given date cannot be in the future."
+                + " Unless you are a super. In that case, please sight yourself.");
     }
 
 }

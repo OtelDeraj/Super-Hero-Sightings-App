@@ -43,6 +43,9 @@ and open the template in the editor.
             <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
                     <form id="superFormEdit" action="/editsuper" method="POST">
+                        <div th:hidden="${isValid}">
+                            <p th:text="${errorMessage}"></p>
+                        </div>
                         <input type="hidden" th:value="${super.id}" name="toGet.id"/>
                         <div class="form-group row">
                             <div class="col-3">

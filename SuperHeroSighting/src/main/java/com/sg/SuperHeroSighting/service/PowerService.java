@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.service;
 import com.sg.SuperHeroSighting.dao.PowerDao;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -61,7 +62,7 @@ public class PowerService {
         }
     }
     
-    public Power createPower(Power toAdd) throws InvalidEntityException {
+    public Power createPower(Power toAdd) throws InvalidEntityException, DuplicateNameException {
         validatePower(toAdd);
         try {
             return powDao.addPower(toAdd);
@@ -70,7 +71,7 @@ public class PowerService {
         }
     }
     
-    public void editPower(Power toEdit) throws InvalidEntityException {
+    public void editPower(Power toEdit) throws InvalidEntityException, DuplicateNameException {
         validatePower(toEdit);
         try {
             powDao.editPower(toEdit);
@@ -89,10 +90,10 @@ public class PowerService {
 
     private void validatePower(Power toCheck) throws InvalidEntityException {
         if(toCheck == null
-                || toCheck.getName().isBlank() 
-                || toCheck.getName().trim().length() > 30) {
+                || toCheck.getName().isBlank() ) {
             throw new InvalidEntityException("Power Entity and associated fields cannot be null");
         }
+        if(toCheck.getName().trim().length() > 30) throw new InvalidEntityException("Power name must be 30 characters or less");
     }
 
 }

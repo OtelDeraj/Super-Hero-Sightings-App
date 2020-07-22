@@ -10,6 +10,7 @@ import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.dto.SuperVM;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -41,21 +42,21 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 @Controller
 public class SuperController {
-    
+
     @Autowired
     SuperService service;
-    
+
     @Autowired
     SightingService sightServ;
-    
+
     @Autowired
     OrgService orgServ;
-    
+
     @Autowired
     PowerService powServ;
-    
+
     @GetMapping("/supers")
-    public String displaySupersPage(Model pageModel){
+    public String displaySupersPage(Model pageModel) {
 //        Super toAdd = new Super();
 //        toAdd.setOrgs(new HashSet<>());
 //        toAdd.setPowers(new HashSet<>());
@@ -80,10 +81,10 @@ public class SuperController {
         pageModel.addAttribute("supers", allSupers);
         return "supers";
     }
-    
+
     @GetMapping("/super/{id}")
     public String displaySuperDetails(@PathVariable Integer id, Model pageModel) {
-        List<Sighting> sightingsForSuper = new ArrayList<>(); 
+        List<Sighting> sightingsForSuper = new ArrayList<>();
         Super toDisplay = new Super();
         try {
             toDisplay = service.getSuperById(id);
@@ -97,16 +98,15 @@ public class SuperController {
         pageModel.addAttribute("super", toDisplay);
         return "superdetail";
     }
-    
-    
+
     @PostMapping("addsuper")
-    public String addSuper(SuperVM toAdd) throws InvalidIdException, InvalidEntityException{
+    public String addSuper(SuperVM toAdd) throws InvalidIdException, InvalidEntityException, DuplicateNameException {
         Set<Power> allPowers = new HashSet<>();
         Set<Org> allOrgs = new HashSet<>();
-        for(Integer p: toAdd.getPowerIds()){
+        for (Integer p : toAdd.getPowerIds()) {
             allPowers.add(powServ.getPowerById(p));
         }
-        for(Integer o: toAdd.getOrgIds()){
+        for (Integer o : toAdd.getOrgIds()) {
             allOrgs.add(orgServ.getOrgById(o));
         }
         toAdd.getToGet().setPowers(allPowers);
@@ -115,48 +115,58 @@ public class SuperController {
         return "redirect:/supers";
     }
 
-    
     @GetMapping("editsuper/{id}")
-    public String displayEditSuper(Model pageModel, @PathVariable Integer id) throws InvalidIdException, EmptyResultException{
+    public String displayEditSuper(Model pageModel, @PathVariable Integer id) throws InvalidIdException, EmptyResultException {
         List<Org> allOrgs = new ArrayList<>();
         List<Super> allSupers = new ArrayList<>();
         Super toEdit = service.getSuperById(id);
-        try{
+        try {
             allOrgs = orgServ.getAllOrgs();
             allOrgs.forEach(o -> o.setSupers(null));
-        } catch(EmptyResultException ex){
+        } catch (EmptyResultException ex) {
         }
         try {
             allSupers = service.getAllSupers();
         } catch (EmptyResultException ex) {
         }
+        pageModel.addAttribute("isValid", true);
         pageModel.addAttribute("super", toEdit);
         pageModel.addAttribute("supers", allSupers);
         pageModel.addAttribute("powers", powServ.getAllPowers());
         pageModel.addAttribute("orgs", allOrgs);
         return "editsuper";
     }
-    
+
     @PostMapping("editsuper")
-    public String editSuper(SuperVM toEdit) throws InvalidIdException, InvalidEntityException{
-        Set<Power> allPowers = new HashSet<>();
-        Set<Org> allOrgs = new HashSet<>();
-        for(Integer p: toEdit.getPowerIds()){
-            allPowers.add(powServ.getPowerById(p));
+    public String editSuper(SuperVM toEdit, Model pageModel) throws InvalidIdException, EmptyResultException {
+        Set<Power> powersToEdit = new HashSet<>();
+        Set<Org> orgsToEdit = new HashSet<>();
+        for (Integer p : toEdit.getPowerIds()) {
+            powersToEdit.add(powServ.getPowerById(p));
         }
-        for(Integer o: toEdit.getOrgIds()){
-            allOrgs.add(orgServ.getOrgById(o));
+        for (Integer o : toEdit.getOrgIds()) {
+            orgsToEdit.add(orgServ.getOrgById(o));
         }
-        toEdit.getToGet().setPowers(allPowers);
-        toEdit.getToGet().setOrgs(allOrgs);
-        service.editSuper(toEdit.getToGet());
+        toEdit.getToGet().setPowers(powersToEdit);
+        toEdit.getToGet().setOrgs(orgsToEdit);
+        try {
+            service.editSuper(toEdit.getToGet());
+        } catch (DuplicateNameException | InvalidEntityException ex) {
+            pageModel.addAttribute("supers", service.getAllSupers());
+            pageModel.addAttribute("powers", powServ.getAllPowers());
+            pageModel.addAttribute("orgs", orgServ.getAllOrgs());
+            pageModel.addAttribute("super", toEdit.getToGet());
+            pageModel.addAttribute("isValid", false);
+            pageModel.addAttribute("errorMessage", ex.getMessage());
+            return "editsuper";
+        } 
         return "redirect:/supers";
     }
-    
+
     @GetMapping("/deletesuper/{id}")
-    public String deleteSuperById(@PathVariable Integer id) throws InvalidIdException{
+    public String deleteSuperById(@PathVariable Integer id) throws InvalidIdException {
         service.removeSuper(id);
         return "redirect:/supers";
     }
-    
+
 }

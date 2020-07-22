@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.controller;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.dto.LocationVM;
 import com.sg.SuperHeroSighting.dto.Sighting;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -62,7 +63,7 @@ public class LocationController {
     }
     
     @PostMapping("addlocation")
-    public String addLocation(LocationVM toAdd){
+    public String addLocation(LocationVM toAdd) throws DuplicateNameException{
         try {
             service.createLocation(toAdd.getToGet());
         } catch (InvalidEntityException ex) {
@@ -88,7 +89,7 @@ public class LocationController {
     }
     
     @PostMapping("editlocation")
-    public String editLocation(LocationVM toEdit){
+    public String editLocation(LocationVM toEdit) throws DuplicateNameException{
         try {
             service.editLocation(toEdit.getToGet());
         } catch (InvalidEntityException ex) {

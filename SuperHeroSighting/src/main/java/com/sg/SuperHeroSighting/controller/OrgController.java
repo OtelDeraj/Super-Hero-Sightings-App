@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.OrgVM;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.dto.Super;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -71,7 +72,7 @@ public class OrgController {
     }
     
     @PostMapping("addorg")
-    public String addOrg(OrgVM toAdd) throws InvalidIdException, InvalidEntityException{
+    public String addOrg(OrgVM toAdd) throws InvalidIdException, InvalidEntityException, DuplicateNameException{
         Set<Super> supersForOrg = new HashSet<>();
         for(Integer s: toAdd.getSuperIds()){
             supersForOrg.add(supServ.getSuperById(s));
@@ -105,7 +106,7 @@ public class OrgController {
     }
     
     @PostMapping("editorg")
-    public String editOrg(OrgVM toEdit) throws InvalidIdException, InvalidEntityException{
+    public String editOrg(OrgVM toEdit) throws InvalidIdException, InvalidEntityException, DuplicateNameException{
         Set<Super> supersForOrg = new HashSet<>();
         for(Integer s: toEdit.getSuperIds()){
             supersForOrg.add(supServ.getSuperById(s));

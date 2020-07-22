@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.controller;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.PowerVM;
 import com.sg.SuperHeroSighting.dto.Super;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -60,14 +61,27 @@ public class PowerController {
             supersWithPower = supServ.getSupersByPowerId(toDisplay.getId());
         } catch (InvalidIdException ex) {
         }
+        pageModel.addAttribute("isValid", true);
         pageModel.addAttribute("supers", supersWithPower);
         pageModel.addAttribute("power", toDisplay);
         return "powerdetail";
     }
     
     @PostMapping("addpower")
-    public String addPower(PowerVM toAdd) throws InvalidEntityException{
-        service.createPower(toAdd.getToGet());
+    public String addPower(PowerVM toAdd, Model pageModel) {
+        List<Power> allPowers = new ArrayList<>();
+        try {
+            allPowers = service.getAllPowers();
+        } catch (EmptyResultException ex) {
+        }
+        try {
+            service.createPower(toAdd.getToGet());
+        } catch (DuplicateNameException | InvalidEntityException ex) {
+            pageModel.addAttribute("isValid", false);
+            pageModel.addAttribute("errorMessage", ex.getMessage());
+            pageModel.addAttribute("powers", allPowers);
+            return "powers";
+        }
         return "redirect:/powers";
     }
     
@@ -79,16 +93,22 @@ public class PowerController {
         } catch (EmptyResultException ex) {
         }
         Power toEdit = service.getPowerById(id);
+        pageModel.addAttribute("isValid", true);
         pageModel.addAttribute("power", toEdit);
         pageModel.addAttribute("powers", allPowers);
         return "editpower";
     }
     
     @PostMapping("editpower")
-    public String editPower(PowerVM toEdit){
+    public String editPower(PowerVM toEdit, Model pageModel) throws EmptyResultException {
         try {
             service.editPower(toEdit.getToGet());
-        } catch (InvalidEntityException ex) {
+        } catch (InvalidEntityException | DuplicateNameException ex) {
+            pageModel.addAttribute("isValid", false);
+            pageModel.addAttribute("errorMessage", ex.getMessage());
+            pageModel.addAttribute("power", toEdit.getToGet());
+            pageModel.addAttribute("powers", service.getAllPowers());
+            return "editpower";
         }
         return "redirect:/powers";
     }

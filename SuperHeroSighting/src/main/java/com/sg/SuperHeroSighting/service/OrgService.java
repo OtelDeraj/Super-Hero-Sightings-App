@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.service;
 import com.sg.SuperHeroSighting.dao.OrgDao;
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -61,7 +62,7 @@ public class OrgService {
         }
     }
     
-    public Org addNewOrg(Org toAdd) throws InvalidEntityException {
+    public Org addNewOrg(Org toAdd) throws InvalidEntityException, DuplicateNameException {
         validateOrg(toAdd);
         try {
             return orgDao.createOrg(toAdd);
@@ -70,7 +71,7 @@ public class OrgService {
         }
     }
     
-    public void editOrg(Org toEdit) throws InvalidEntityException {
+    public void editOrg(Org toEdit) throws InvalidEntityException, DuplicateNameException {
         validateOrg(toEdit);
         try {
             orgDao.editOrg(toEdit);
@@ -88,14 +89,14 @@ public class OrgService {
     }
 
     private void validateOrg(Org toCheck) throws InvalidEntityException {
-        if(toCheck == null 
-                || toCheck.getName().isBlank() || toCheck.getName().trim().length() > 50
-                || toCheck.getDescription().isBlank() || toCheck.getDescription().trim().length() > 255
-                || toCheck.getAddress().isBlank() || toCheck.getAddress().trim().length() > 60
-                || toCheck.getPhone().isBlank() || toCheck.getPhone().trim().length() > 15
-                || toCheck.getSupers().isEmpty()) {
-            throw new InvalidEntityException("Org and associated fields cannot be null");
+        if(toCheck == null || toCheck.getName().isBlank() || toCheck.getDescription().isBlank() 
+                || toCheck.getAddress().isBlank() || toCheck.getPhone().isBlank() || toCheck.getSupers().isEmpty()) {
+            throw new InvalidEntityException("Please ensure all fields are filled in.");
         }
+        if(toCheck.getName().trim().length() > 50) throw new InvalidEntityException("Org name must be 50 characters or less");
+        if(toCheck.getDescription().trim().length() > 255) throw new InvalidEntityException("Please describe this org in 255 characters or less");
+        if(toCheck.getAddress().trim().length() > 60) throw new InvalidEntityException("Org address must be 60 characters or less");
+        if(toCheck.getPhone().trim().length() > 15) throw new InvalidEntityException("Phone number cannot be more than 15 characters long");
     }
     
 }

@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.TestAppConfig;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
 import java.util.List;
@@ -143,7 +144,7 @@ public class SuperDBImplTest {
      * Test of createSuper method, of class SuperDBImpl.
      */
     @Test
-    public void testCreateSuper() throws SuperDaoException, InvalidEntityException, BadUpdateException {
+    public void testCreateSuper() throws SuperDaoException, InvalidEntityException, BadUpdateException, DuplicateNameException {
         Super toCreate = new Super(dao.getSuperById(1));
         toCreate.setName("Fourth Hero");
         toCreate.setDescription("Fourth Desc");
@@ -159,7 +160,7 @@ public class SuperDBImplTest {
      * Test of editSuper method, of class SuperDBImpl.
      */
     @Test
-    public void testEditSuper() throws SuperDaoException, BadUpdateException, InvalidEntityException {
+    public void testEditSuper() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         Super toEdit = dao.getSuperById(1);
         toEdit.setName("First Hero PE");
         toEdit.setDescription("First Description PE");

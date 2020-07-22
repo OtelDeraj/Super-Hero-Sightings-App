@@ -8,6 +8,7 @@ package com.sg.SuperHeroSighting.service;
 import com.sg.SuperHeroSighting.dao.SuperDao;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
@@ -69,7 +70,7 @@ public class SuperService {
         }
     }
 
-    public Super createSuper(Super toAdd) throws InvalidEntityException {
+    public Super createSuper(Super toAdd) throws InvalidEntityException, DuplicateNameException {
         validateSuper(toAdd);
         try {
             return supDao.createSuper(toAdd);
@@ -78,12 +79,12 @@ public class SuperService {
         }
     }
     
-    public void editSuper(Super toEdit) throws InvalidEntityException {
+    public void editSuper(Super toEdit) throws InvalidEntityException, DuplicateNameException {
         validateSuper(toEdit);
         try {
             supDao.editSuper(toEdit);
         } catch (SuperDaoException | BadUpdateException ex) {
-            throw new InvalidEntityException("Edit Super entity was invalid");
+            throw new InvalidEntityException("Super fields were invalid or missing");
         }
     }
     
@@ -97,11 +98,12 @@ public class SuperService {
 
     private void validateSuper(Super toCheck) throws InvalidEntityException {
         if(toCheck == null
-                || toCheck.getName().isBlank() || toCheck.getName().trim().length() > 30 
-                || toCheck.getDescription().isBlank() || toCheck.getDescription().trim().length() > 255
+                || toCheck.getName().isBlank() || toCheck.getDescription().isBlank()
                 || toCheck.getOrgs().isEmpty() || toCheck.getPowers().isEmpty()){
-            throw new InvalidEntityException("Invalid Entity.");
+            throw new InvalidEntityException("Please provide a name, description, and a set of powers and orgs. These fields cannot be empty");
         } 
+        if(toCheck.getName().trim().length() > 30) throw new InvalidEntityException("Super name must be 30 characters or less");
+        if(toCheck.getDescription().trim().length() > 255) throw new InvalidEntityException("Please describe your super in 255 characters or less");
     }
 
 }
