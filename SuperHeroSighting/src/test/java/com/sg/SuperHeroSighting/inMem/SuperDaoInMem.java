@@ -113,18 +113,17 @@ public class SuperDaoInMem implements SuperDao {
         }
 
         for (Super s : allSupers) {
-            if(s.getOrgs().contains(currentOrg)){
+            if (s.getOrgs().contains(currentOrg)) {
                 toReturn.add(s);
             }
         }
-        
+
         return toReturn;
     }
 
     @Override
     public Super createSuper(Super toAdd) throws SuperDaoException, BadUpdateException {
         int nextId = allSupers.stream().mapToInt(s -> s.getId()).max().orElse(0) + 1;
-        
         toAdd.setId(nextId);
         allSupers.add(toAdd);
         return toAdd;
@@ -132,10 +131,10 @@ public class SuperDaoInMem implements SuperDao {
 
     @Override
     public void editSuper(Super toEdit) throws SuperDaoException, BadUpdateException {
-        
+
         boolean isValid = false;
-        for(Super s : allSupers){
-            if(s.getId() == toEdit.getId()){
+        for (Super s : allSupers) {
+            if (s.getId() == toEdit.getId()) {
                 s.setName(toEdit.getName());
                 s.setDescription(toEdit.getDescription());
                 s.setPowers(toEdit.getPowers());
@@ -143,25 +142,25 @@ public class SuperDaoInMem implements SuperDao {
                 isValid = true;
             }
         }
-        if(!isValid){
+        if (!isValid) {
             throw new BadUpdateException("Invalid Id");
         }
     }
 
     @Override
     public void removeSuper(int id) throws SuperDaoException, BadUpdateException {
-        
+
         boolean validId = false;
         Super toRemove = null;
-        
-        for(Super s : allSupers){
-            if(s.getId() == id){
+
+        for (Super s : allSupers) {
+            if (s.getId() == id) {
                 toRemove = s;
                 validId = true;
                 break;
             }
         }
-        if(validId){
+        if (validId) {
             allSupers.remove(toRemove);
         } else {
             throw new BadUpdateException("Invalid ID");
@@ -194,4 +193,6 @@ public class SuperDaoInMem implements SuperDao {
     public void clearSupers() {
         allSupers.clear();
     }
+    
+    
 }

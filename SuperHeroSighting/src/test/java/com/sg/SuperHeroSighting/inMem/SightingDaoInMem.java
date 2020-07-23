@@ -32,7 +32,7 @@ public class SightingDaoInMem implements SightingDao{
     Super super1 = new Super(1, "First Hero", "First Desc", null, null);
     Super super2 = new Super(2, "Second Hero", "Second Desc", null, null);
     Location loc1 = new Location(1, "First Name", "First Desc", "First Adr", null, null);
-    Location loc2 = new Location(1, "Second Name", "Second Desc", "Second Adr", null, null);
+    Location loc2 = new Location(2, "Second Name", "Second Desc", "Second Adr", null, null);
     LocalDate date1 = LocalDate.of(2020, 12, 8);
     LocalDate date2 = LocalDate.of(2020, 12, 15);
     LocalDate date3 = LocalDate.of(2020, 12, 25);
@@ -141,9 +141,9 @@ public class SightingDaoInMem implements SightingDao{
     
     public void setUp(){
         allSightings.clear();
-        Sighting s1 = new Sighting(date1, super1, loc1);
-        Sighting s2 = new Sighting(date2, super2, loc2);
-        Sighting s3 = new Sighting(date3, super1, loc2);
+        Sighting s1 = new Sighting(1, date1, super1, loc1);
+        Sighting s2 = new Sighting(2, date2, super2, loc2);
+        Sighting s3 = new Sighting(3, date3, super1, loc2);
         allSightings.add(s1);
         allSightings.add(s2);
         allSightings.add(s3);

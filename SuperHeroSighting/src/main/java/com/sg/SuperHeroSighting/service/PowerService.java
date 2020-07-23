@@ -89,7 +89,7 @@ public class PowerService {
     }
 
     private void validatePower(Power toCheck) throws InvalidEntityException {
-        if(toCheck == null
+        if(toCheck == null || toCheck.getName() == null
                 || toCheck.getName().isBlank() ) {
             throw new InvalidEntityException("Power Entity and associated fields cannot be null");
         }

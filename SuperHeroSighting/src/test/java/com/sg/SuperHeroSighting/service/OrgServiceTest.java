@@ -31,72 +31,58 @@ public class OrgServiceTest {
     @Autowired
     OrgDaoInMem dao;
     
-    public OrgServiceTest() {
-    }
-    
-    @BeforeAll
-    public static void setUpClass() {
-    }
-    
-    @AfterAll
-    public static void tearDownClass() {
-    }
-    
     @BeforeEach
     public void setUp() {
-    }
-    
-    @AfterEach
-    public void tearDown() {
+        dao.setUp();
     }
 
     /**
      * Test of getOrgById method, of class OrgService.
      */
     @Test
-    public void testGetOrgById() throws Exception {
+    public void testGetOrgById() {
     }
 
     /**
      * Test of getOrgByName method, of class OrgService.
      */
     @Test
-    public void testGetOrgByName() throws Exception {
+    public void testGetOrgByName() {
     }
 
     /**
      * Test of getAllOrgs method, of class OrgService.
      */
     @Test
-    public void testGetAllOrgs() throws Exception {
+    public void testGetAllOrgs() {
     }
 
     /**
      * Test of getOrgsForSuperId method, of class OrgService.
      */
     @Test
-    public void testGetOrgsForSuperId() throws Exception {
+    public void testGetOrgsForSuperId() {
     }
 
     /**
      * Test of addNewOrg method, of class OrgService.
      */
     @Test
-    public void testAddNewOrg() throws Exception {
+    public void testAddNewOrg() {
     }
 
     /**
      * Test of editOrg method, of class OrgService.
      */
     @Test
-    public void testEditOrg() throws Exception {
+    public void testEditOrg() {
     }
 
     /**
      * Test of removeOrg method, of class OrgService.
      */
     @Test
-    public void testRemoveOrg() throws Exception {
+    public void testRemoveOrg() {
     }
     
 }

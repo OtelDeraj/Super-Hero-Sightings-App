@@ -125,6 +125,7 @@ public class SightingService { // TODO all the throws in this service will be ch
     //  | |    Sighting Validation Methods   | |
     //  V V                                  V V 
     private void validateSighting(Sighting toValidate) throws InvalidEntityException {
+        if(toValidate == null) throw new InvalidEntityException("Sighting cannot be null");
         if (toValidate.getDate() == null
                 || toValidate.getLocation() == null
                 || toValidate.getSpottedSuper() == null) {

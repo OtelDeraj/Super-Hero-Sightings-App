@@ -97,7 +97,7 @@ public class SuperService {
     }
 
     private void validateSuper(Super toCheck) throws InvalidEntityException {
-        if(toCheck == null
+        if(toCheck == null || toCheck.getName() == null || toCheck.getDescription() == null || toCheck.getPowers() == null || toCheck.getOrgs() == null
                 || toCheck.getName().isBlank() || toCheck.getDescription().isBlank()
                 || toCheck.getOrgs().isEmpty() || toCheck.getPowers().isEmpty()){
             throw new InvalidEntityException("Please provide a name, description, and a set of powers and orgs. These fields cannot be empty");

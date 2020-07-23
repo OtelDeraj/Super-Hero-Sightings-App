@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dao.PowerDao;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,10 +30,7 @@ public class PowerDaoInMem implements PowerDao {
 
     List<Power> allPowers = new ArrayList<>();
     Set<Power> powerSet1 = new HashSet<>();
-    Super sup1 = new Super(1, "Test", "Test Desc", powerSet1, null);
-    Power p1 = new Power(1, "Flight");
-    Power p2 = new Power(2, "Speed");
-    Power p3 = new Power(3, "Strength");
+    Super sup1;
 
     @Override
     public Power getPowerById(int id) throws PowerDaoException {
@@ -65,15 +63,15 @@ public class PowerDaoInMem implements PowerDao {
     public List<Power> getPowersForSuperId(int id) throws PowerDaoException {
         List<Power> toReturn = new ArrayList<>();
         Super currentSuper = null;
-        switch(id){
+        switch (id) {
             case 1:
                 currentSuper = sup1;
                 break;
             default:
                 throw new PowerDaoException("No super found for id");
         }
-        for(Power p: allPowers){
-            if(currentSuper.getPowers().contains(p)){
+        for (Power p : allPowers) {
+            if (currentSuper.getPowers().contains(p)) {
                 toReturn.add(p);
             }
         }
@@ -84,7 +82,12 @@ public class PowerDaoInMem implements PowerDao {
     }
 
     @Override
-    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException {
+    public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, DuplicateNameException {
+        for (Power p : allPowers) {
+            if (p.getName().equalsIgnoreCase(toAdd.getName())) {
+                throw new DuplicateNameException("Name already exists");
+            }
+        }
         int nextId = allPowers.stream().mapToInt(p -> p.getId()).max().orElse(0) + 1;
         toAdd.setId(nextId);
         allPowers.add(toAdd);
@@ -92,16 +95,21 @@ public class PowerDaoInMem implements PowerDao {
     }
 
     @Override
-    public void editPower(Power toEdit) throws PowerDaoException, BadUpdateException {
+    public void editPower(Power toEdit) throws PowerDaoException, BadUpdateException, DuplicateNameException {
+        for (Power p : allPowers) {
+            if (p.getName().equalsIgnoreCase(toEdit.getName())) {
+                throw new DuplicateNameException("Name already exists");
+            }
+        }
         boolean validId = false;
-        for(Power p : allPowers){
-            if(p.getId() == toEdit.getId()){
+        for (Power p : allPowers) {
+            if (p.getId() == toEdit.getId()) {
                 p.setName(toEdit.getName());
                 validId = true;
                 break;
             }
         }
-        if(!validId){
+        if (!validId) {
             throw new BadUpdateException("Update Failed");
         }
     }
@@ -110,14 +118,14 @@ public class PowerDaoInMem implements PowerDao {
     public void removePower(int id) throws PowerDaoException, BadUpdateException {
         boolean validId = false;
         Power toRemove = null;
-        for(Power p : allPowers){
-            if(p.getId() == id){
+        for (Power p : allPowers) {
+            if (p.getId() == id) {
                 toRemove = p;
                 validId = true;
                 break;
             }
         }
-        if(!validId){
+        if (!validId) {
             throw new BadUpdateException("Remove failed");
         } else {
             allPowers.remove(toRemove);
@@ -128,6 +136,10 @@ public class PowerDaoInMem implements PowerDao {
 
         powerSet1.clear();
         allPowers.clear();
+        sup1 = new Super(1, "Test", "Test Desc", powerSet1, null);
+        Power p1 = new Power(1, "Flight");
+        Power p2 = new Power(2, "Speed");
+        Power p3 = new Power(3, "Strength");
         powerSet1.add(p3);
         powerSet1.add(p1);
         allPowers.add(p1);
@@ -137,6 +149,7 @@ public class PowerDaoInMem implements PowerDao {
     }
 
     public void clearPowers() {
-
+        allPowers.clear();
+        powerSet1.clear();
     }
 }
