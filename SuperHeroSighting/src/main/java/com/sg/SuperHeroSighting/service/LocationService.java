@@ -75,7 +75,8 @@ public class LocationService {
 
     public Location createLocation(Location toAdd) throws InvalidEntityException, DuplicateNameException{
         validateLocation(toAdd);
-        validateCoord(toAdd.getCoord());
+        Coord toValidate = new Coord(toAdd.getLat(), toAdd.getLon());
+        validateCoord(toValidate);
         try {
             return locDao.createLocation(toAdd);
         } catch (LocationDaoException | BadUpdateException ex) {
@@ -85,7 +86,8 @@ public class LocationService {
     
     public void editLocation(Location toEdit) throws InvalidEntityException, DuplicateNameException {
         validateLocation(toEdit);
-        validateCoord(toEdit.getCoord());
+        Coord toValidate = new Coord(toEdit.getLat(), toEdit.getLon());
+        validateCoord(toValidate);
         try {
             locDao.editLocation(toEdit);
         } catch (LocationDaoException | BadUpdateException ex) {

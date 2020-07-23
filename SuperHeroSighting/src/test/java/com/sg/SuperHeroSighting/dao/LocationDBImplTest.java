@@ -60,8 +60,8 @@ public class LocationDBImplTest {
         assertEquals("First Name", toTest.getName());
         assertEquals("First Desc", toTest.getDescription());
         assertEquals("First Address", toTest.getAddress());
-        assertEquals(new BigDecimal("90.00000"), toTest.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), toTest.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), toTest.getLat());
+        assertEquals(new BigDecimal("180.00000"), toTest.getLon());
     }
 
     /**
@@ -74,8 +74,8 @@ public class LocationDBImplTest {
         assertEquals("First Name", toTest.getName());
         assertEquals("First Desc", toTest.getDescription());
         assertEquals("First Address", toTest.getAddress());
-        assertEquals(new BigDecimal("90.00000"), toTest.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), toTest.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), toTest.getLat());
+        assertEquals(new BigDecimal("180.00000"), toTest.getLon());
     }
 
     /**
@@ -88,8 +88,8 @@ public class LocationDBImplTest {
         assertEquals("First Name", toTest.getName());
         assertEquals("First Desc", toTest.getDescription());
         assertEquals("First Address", toTest.getAddress());
-        assertEquals(new BigDecimal("90.00000"), toTest.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), toTest.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), toTest.getLat());
+        assertEquals(new BigDecimal("180.00000"), toTest.getLon());
     }
 
     /**
@@ -103,8 +103,8 @@ public class LocationDBImplTest {
         assertEquals("First Name", toTest.getName());
         assertEquals("First Desc", toTest.getDescription());
         assertEquals("First Address", toTest.getAddress());
-        assertEquals(new BigDecimal("90.00000"), toTest.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), toTest.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), toTest.getLat());
+        assertEquals(new BigDecimal("180.00000"), toTest.getLon());
     }
 
     
@@ -124,15 +124,15 @@ public class LocationDBImplTest {
         assertEquals("First Name", first.getName());
         assertEquals("First Desc", first.getDescription());
         assertEquals("First Address", first.getAddress());
-        assertEquals(new BigDecimal("90.00000"), first.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), first.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), first.getLat());
+        assertEquals(new BigDecimal("180.00000"), first.getLon());
         Location last = allLocations.get(allLocations.size() - 1);
         assertEquals(3, last.getId());
         assertEquals("Third Name", last.getName());
         assertEquals("Third Desc", last.getDescription());
         assertEquals("Third Address", last.getAddress());
-        assertEquals(new BigDecimal("-45.00000"), last.getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), last.getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), last.getLat());
+        assertEquals(new BigDecimal("-90.00000"), last.getLon());
     }
 
     /**
@@ -140,15 +140,14 @@ public class LocationDBImplTest {
      */
     @Test
     public void testCreateLocation() throws LocationDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
-        Coord coord = new Coord(new BigDecimal("90.00000"), new BigDecimal("-180.00000"));
-        Location toCreate = new Location("New Name", "New Desc", "New Address", coord);
+        Location toCreate = new Location("New Name", "New Desc", "New Address",new BigDecimal("90.00000"), new BigDecimal("-180.00000"));
         Location returned = dao.createLocation(toCreate);
         assertEquals(4, returned.getId());
         assertEquals("New Name", returned.getName());
         assertEquals("New Desc", returned.getDescription());
         assertEquals("New Address", returned.getAddress());
-        assertEquals(new BigDecimal("90.00000"), returned.getCoord().getLat());
-        assertEquals(new BigDecimal("-180.00000"), returned.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), returned.getLat());
+        assertEquals(new BigDecimal("-180.00000"), returned.getLon());
     }
 
     /**
@@ -157,23 +156,22 @@ public class LocationDBImplTest {
     @Test
     public void testEditLocation() throws LocationDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         
-        Coord coordEdit = new Coord(new BigDecimal("-90.00000"), new BigDecimal("-180.00000"));
-        Location toEdit = new Location(1, "Edit Name", "Edit Desc", "Edit Address", coordEdit);
+        Location toEdit = new Location(1, "Edit Name", "Edit Desc", "Edit Address", new BigDecimal("-90.00000"), new BigDecimal("-180.00000"));
         Location preEdit = dao.getLocationById(1);
         assertEquals(1, preEdit.getId());
         assertEquals("First Name", preEdit.getName());
         assertEquals("First Desc", preEdit.getDescription());
         assertEquals("First Address", preEdit.getAddress());
-        assertEquals(new BigDecimal("90.00000"), preEdit.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), preEdit.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), preEdit.getLat());
+        assertEquals(new BigDecimal("180.00000"), preEdit.getLon());
         dao.editLocation(toEdit);
         Location postEdit = dao.getLocationById(1);
         assertEquals(1, postEdit.getId());
         assertEquals("Edit Name", postEdit.getName());
         assertEquals("Edit Desc", postEdit.getDescription());
         assertEquals("Edit Address", postEdit.getAddress());
-        assertEquals(new BigDecimal("-90.00000"), postEdit.getCoord().getLat());
-        assertEquals(new BigDecimal("-180.00000"), postEdit.getCoord().getLon());
+        assertEquals(new BigDecimal("-90.00000"), postEdit.getLat());
+        assertEquals(new BigDecimal("-180.00000"), postEdit.getLon());
     }
 
     /**
@@ -191,15 +189,15 @@ public class LocationDBImplTest {
         assertEquals("First Name", first.getName());
         assertEquals("First Desc", first.getDescription());
         assertEquals("First Address", first.getAddress());
-        assertEquals(new BigDecimal("90.00000"), first.getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), first.getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), first.getLat());
+        assertEquals(new BigDecimal("180.00000"), first.getLon());
         Location last = postRemove.get(postRemove.size() - 1);
         assertEquals(3, last.getId());
         assertEquals("Third Name", last.getName());
         assertEquals("Third Desc", last.getDescription());
         assertEquals("Third Address", last.getAddress());
-        assertEquals(new BigDecimal("-45.00000"), last.getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), last.getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), last.getLat());
+        assertEquals(new BigDecimal("-90.00000"), last.getLon());
     }
     
 }

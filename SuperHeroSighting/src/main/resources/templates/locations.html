@@ -46,42 +46,62 @@ and open the template in the editor.
                     <form id="locationForm" action="/addlocation" method="POST">
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                                <label for="name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${location.name}" type="text" name="name" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('location.name')}">
+                                    <p th:each="error : ${#fields.errors('location.name')}"
+                                       class="alert alert-danger" th:text="${error}">Bad Name</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.description">Description: </label>
+                                <label for="description">Description: </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" name="toGet.description" class="form-control"/>
+                                <input th:value="${location.description}" type="text" name="description" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('location.description')}">
+                                    <p th:each="error : ${#fields.errors('location.description')}"
+                                       class="alert alert-danger" th:text="${error}">Bad description</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.address">Address: </label>
+                                <label for="address">Address: </label>
                             </div>
                             <div class="col-9">
-                                <input type="text" name="toGet.address" class="form-control"/>
+                                <input th:value="${location.address}" type="text" name="address" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('location.address')}">
+                                    <p th:each="error : ${#fields.errors('location.address')}"
+                                       class="alert alert-danger" th:text="${error}">Bad address</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.coord.lat">Latitude: </label>
+                                <label for="lat">Latitude: </label>
                             </div>
                             <div class="col-9">
-                                <input type="number" name="toGet.coord.lat" class="form-control"/>
+                                <input th:value="${location.lat}" type="text" name="latString" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('location.lat')}">
+                                    <p th:each="error : ${#fields.errors('location.lat')}"
+                                       class="alert alert-danger" th:text="${error}">Bad lat</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.coord.lon">Longitude: </label>
+                                <label for="lon">Longitude: </label>
                             </div>
                             <div class="col-9">
-                                <input type="number" name="toGet.coord.lon" class="form-control"/>
+                                <input th:value="${location.lon}" type="text" name="lonString" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('location.lon')}">
+                                    <p th:each="error : ${#fields.errors('location.lon')}"
+                                       class="alert alert-danger" th:text="${error}">Bad lon</p>
+                                </div>
                             </div>
                         </div>
 
@@ -118,8 +138,8 @@ and open the template in the editor.
                                     <td th:text="${location.id}"></td>
                                     <td th:text="${location.name}"></td>
                                     <td th:text="${location.address}"></td>
-                                    <td th:text="${location.coord.lat}"></td>
-                                    <td th:text="${location.coord.lon}"></td>
+                                    <td th:text="${location.lat}"></td>
+                                    <td th:text="${location.lon}"></td>
                                     <td><a href="#" th:href="${'/location/' + location.id}">...</a></td>
                                     <td><a href="#" th:href="${'/editlocation/' + location.id}">Edit</a></td>
                                     <td><a href="#" th:href="${'/deletelocation/' + location.id}">Delete</a></td>

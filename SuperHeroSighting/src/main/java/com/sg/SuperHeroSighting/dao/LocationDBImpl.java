@@ -18,6 +18,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -34,13 +35,21 @@ public class LocationDBImpl implements LocationDao {
     JdbcTemplate template;
 
     @Override
-    public Location getLocationById(int id) {
-        return template.queryForObject("SELECT * FROM Locations WHERE locId = ?", new LocationMapper(), id);
+    public Location getLocationById(int id) throws LocationDaoException {
+        try {
+            return template.queryForObject("SELECT * FROM Locations WHERE locId = ?", new LocationMapper(), id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new LocationDaoException("get location by name failed");
+        }
     }
 
     @Override
-    public Location getLocationByName(String name) {
-        return template.queryForObject("SELECT * FROM Locations WHERE name = ?", new LocationMapper(), name);
+    public Location getLocationByName(String name) throws LocationDaoException {
+        try {
+            return template.queryForObject("SELECT * FROM Locations WHERE name = ?", new LocationMapper(), name);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new LocationDaoException("get location by name failed");
+        }
     }
 
     @Override
@@ -50,8 +59,12 @@ public class LocationDBImpl implements LocationDao {
 
     @Override
     public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException {
-        if(toSearch == null) throw new InvalidEntityException("Coord toSearch cannot be null");
-        if(toSearch.getLat() == null || toSearch.getLon() == null) throw new InvalidEntityException("Coord toSearch cannot have null fields");
+        if (toSearch == null) {
+            throw new InvalidEntityException("Coord toSearch cannot be null");
+        }
+        if (toSearch.getLat() == null || toSearch.getLon() == null) {
+            throw new InvalidEntityException("Coord toSearch cannot have null fields");
+        }
         return template.queryForObject("SELECT * FROM Locations WHERE lat = ? AND lon = ?",
                 new LocationMapper(), toSearch.getLat(), toSearch.getLon());
     }
@@ -59,19 +72,23 @@ public class LocationDBImpl implements LocationDao {
     @Override
     public List<Location> getAllLocations() throws LocationDaoException {
         List<Location> allLocations = template.query("SELECT * FROM Locations", new LocationMapper());
-        if(allLocations.isEmpty()) throw new LocationDaoException("No locations found");
+        if (allLocations.isEmpty()) {
+            throw new LocationDaoException("No locations found");
+        }
         return allLocations;
     }
 
     @Override
     public Location createLocation(Location toAdd) throws LocationDaoException, InvalidEntityException, DuplicateNameException {
         validateLocationData(toAdd);
-        try{
-        int affectedRows = template.update("INSERT INTO Locations(name, description, address, lat, lon)"
-                + "VALUES(?, ?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(), toAdd.getAddress(),
-                toAdd.getCoord().getLat(), toAdd.getCoord().getLon());
-        if(affectedRows < 1) throw new LocationDaoException("Failed to add location");
-        } catch(DuplicateKeyException ex){
+        try {
+            int affectedRows = template.update("INSERT INTO Locations(name, description, address, lat, lon)"
+                    + "VALUES(?, ?, ?, ?, ?)", toAdd.getName(), toAdd.getDescription(), toAdd.getAddress(),
+                    toAdd.getLat(), toAdd.getLon());
+            if (affectedRows < 1) {
+                throw new LocationDaoException("Failed to add location");
+            }
+        } catch (DuplicateKeyException ex) {
             throw new DuplicateNameException("Given name already exists.");
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
@@ -82,13 +99,17 @@ public class LocationDBImpl implements LocationDao {
     @Override
     public void editLocation(Location toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validateLocationData(toEdit);
-        try{
-        int affectedRows = template.update("UPDATE Locations SET name = ?, description = ?, address = ?,"
-                + " lat = ?, lon = ? WHERE locId = ?", toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(),
-                toEdit.getCoord().getLat(), toEdit.getCoord().getLon(), toEdit.getId());
-        if(affectedRows < 1) throw new BadUpdateException("No locations updated");
-        if(affectedRows > 1) throw new BadUpdateException("More than one location updated");
-        } catch(DuplicateKeyException ex){
+        try {
+            int affectedRows = template.update("UPDATE Locations SET name = ?, description = ?, address = ?,"
+                    + " lat = ?, lon = ? WHERE locId = ?", toEdit.getName(), toEdit.getDescription(), toEdit.getAddress(),
+                    toEdit.getLat(), toEdit.getLon(), toEdit.getId());
+            if (affectedRows < 1) {
+                throw new BadUpdateException("No locations updated");
+            }
+            if (affectedRows > 1) {
+                throw new BadUpdateException("More than one location updated");
+            }
+        } catch (DuplicateKeyException ex) {
             throw new DuplicateNameException("Given name already exists.");
         }
     }
@@ -97,14 +118,20 @@ public class LocationDBImpl implements LocationDao {
     public void removeLocation(int id) throws BadUpdateException {
         template.update("DELETE FROM Sightings WHERE locId = ?", id);
         int affectedRows = template.update("DELETE FROM Locations WHERE locId = ?", id);
-        if(affectedRows < 1) throw new BadUpdateException("No locations removed");
-        if(affectedRows > 1) throw new BadUpdateException("More than one location removed");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("No locations removed");
+        }
+        if (affectedRows > 1) {
+            throw new BadUpdateException("More than one location removed");
+        }
     }
-    
-    private void validateLocationData(Location l) throws InvalidEntityException{
-        if(l == null) throw new InvalidEntityException("Location object cannot be null");
-        if(l.getName() == null || l.getDescription() == null || l.getAddress() == null ||
-                l.getCoord() == null || l.getCoord().getLat() == null || l.getCoord().getLon() == null){
+
+    private void validateLocationData(Location l) throws InvalidEntityException {
+        if (l == null) {
+            throw new InvalidEntityException("Location object cannot be null");
+        }
+        if (l.getName() == null || l.getDescription() == null || l.getAddress() == null
+                || l.getLat() == null || l.getLon() == null) {
             throw new InvalidEntityException("Location fields cannot be null");
         }
     }
@@ -118,10 +145,8 @@ public class LocationDBImpl implements LocationDao {
                     rs.getString("name"),
                     rs.getString("description"),
                     rs.getString("address"),
-                    new Coord(
-                            rs.getBigDecimal("lat"),
-                            rs.getBigDecimal("lon")
-                    )
+                    rs.getBigDecimal("lat"),
+                    rs.getBigDecimal("lon")
             );
             return toReturn;
         }

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -37,52 +38,67 @@ public class SightingDBImpl implements SightingDao {
 
     @Override
     public Sighting getSightingById(int id) throws SightingDaoException {
-        Sighting toReturn = template.queryForObject("SELECT * FROM Sightings WHERE sightId = ?", new SightingMapper(), id);
-        if(toReturn == null) throw new SightingDaoException("No Sighting found for given ID");
-        return toReturn;
+        try {
+            return template.queryForObject("SELECT * FROM Sightings WHERE sightId = ?", new SightingMapper(), id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new SightingDaoException("Get sighting by id failed");
+        }
+
     }
 
     @Override
     public List<Sighting> getSightingsBySuperId(int id) throws SightingDaoException { // TODO add validation for all of these returning lists
-        List<Sighting> toReturn = template.query("SELECT * FROM Sightings WHERE superId = ?", new SightingMapper(), id);
-        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found for given Super ID");
-        return toReturn;
+        try {
+            return template.query("SELECT * FROM Sightings WHERE superId = ?", new SightingMapper(), id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new SightingDaoException("Get sighting by name failed");
+        }
     }
 
     @Override
     public List<Sighting> getSightingsByLocId(int id) throws SightingDaoException {
-        List<Sighting> toReturn  = template.query("SELECT * FROM Sightings WHERE locId = ?", new SightingMapper(), id);
-        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found for given Location ID");
+        List<Sighting> toReturn = template.query("SELECT * FROM Sightings WHERE locId = ?", new SightingMapper(), id);
+        if (toReturn.isEmpty()) {
+            throw new SightingDaoException("No sightings found for given Location ID");
+        }
         return toReturn;
     }
 
     @Override
-    public List<Sighting> getSightingsByDate(Date date) throws SightingDaoException {
-        List<Sighting> toReturn  = template.query("SELECT * FROM Sightings WHERE sightDate = ?", new SightingMapper(), date);
-        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found for given Date");
+    public List<Sighting> getSightingsByDate(LocalDate date) throws SightingDaoException {
+        List<Sighting> toReturn = template.query("SELECT * FROM Sightings WHERE sightDate = ?", new SightingMapper(), date);
+        if (toReturn.isEmpty()) {
+            throw new SightingDaoException("No sightings found for given Date");
+        }
         return toReturn;
     }
 
     @Override
     public List<Sighting> getAllSightings() throws SightingDaoException {
-        List<Sighting> toReturn  = template.query("SELECT * FROM Sightings", new SightingMapper());
-        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found");
+        List<Sighting> toReturn = template.query("SELECT * FROM Sightings", new SightingMapper());
+        if (toReturn.isEmpty()) {
+            throw new SightingDaoException("No sightings found");
+        }
         return toReturn;
     }
-    
+
     @Override
     public List<Sighting> getLastTenSightings() throws SightingDaoException {
         List<Sighting> toReturn = template.query("SELECT * FROM Sightings ORDER BY sightDate DESC LIMIT 10", new SightingMapper());
-        if(toReturn.isEmpty()) throw new SightingDaoException("No sightings found");
+        if (toReturn.isEmpty()) {
+            throw new SightingDaoException("No sightings found");
+        }
         return toReturn;
     }
-    
+
     @Override
     public Sighting addSighting(Sighting toAdd) throws SightingDaoException, InvalidEntityException {
         validateSightingData(toAdd);
         int affectedRows = template.update("INSERT INTO Sightings(sightDate, superId, locId)"
                 + "VALUES(?, ?, ?)", toAdd.getDate(), toAdd.getSpottedSuper().getId(), toAdd.getLocation().getId());
-        if(affectedRows < 1) throw new SightingDaoException("Sighting not added");
+        if (affectedRows < 1) {
+            throw new SightingDaoException("Sighting not added");
+        }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         toAdd.setId(newId);
         return toAdd;
@@ -93,15 +109,23 @@ public class SightingDBImpl implements SightingDao {
         validateSightingData(toEdit);
         int affectedRows = template.update("UPDATE Sightings SET sightDate = ?, superId = ?, locId = ? WHERE sightId = ?",
                 toEdit.getDate(), toEdit.getSpottedSuper().getId(), toEdit.getLocation().getId(), toEdit.getId());
-        if(affectedRows < 1) throw new BadUpdateException("No sightings edited");
-        if(affectedRows > 1) throw new BadUpdateException("More than one sighting edited");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("No sightings edited");
+        }
+        if (affectedRows > 1) {
+            throw new BadUpdateException("More than one sighting edited");
+        }
     }
 
     @Override
     public void removeSighting(int id) throws BadUpdateException {
         int affectedRows = template.update("DELETE FROM Sightings WHERE sightId = ?", id);
-        if(affectedRows < 1) throw new BadUpdateException("No sightings removed");
-        if(affectedRows > 1) throw new BadUpdateException("More than one sighting removed");
+        if (affectedRows < 1) {
+            throw new BadUpdateException("No sightings removed");
+        }
+        if (affectedRows > 1) {
+            throw new BadUpdateException("More than one sighting removed");
+        }
     }
 
     private Super getSuperById(int id) {
@@ -111,15 +135,15 @@ public class SightingDBImpl implements SightingDao {
     private Location getLocationById(int id) {
         return template.queryForObject("SELECT * FROM Locations WHERE locId = ?", new LocationMapper(), id);
     }
-    
-    private void validateSightingData(Sighting s) throws InvalidEntityException{
-        if(s == null) throw new InvalidEntityException("Sighting object cannot be null");
-        if(s.getDate() == null || s.getLocation() == null || s.getSpottedSuper() == null){
+
+    private void validateSightingData(Sighting s) throws InvalidEntityException {
+        if (s == null) {
+            throw new InvalidEntityException("Sighting object cannot be null");
+        }
+        if (s.getDate() == null || s.getLocation() == null || s.getSpottedSuper() == null) {
             throw new InvalidEntityException("Sighting fields cannot be null");
         }
     }
-
-    
 
     private class SightingMapper implements RowMapper<Sighting> {
 
@@ -127,7 +151,7 @@ public class SightingDBImpl implements SightingDao {
         public Sighting mapRow(ResultSet rs, int i) throws SQLException {
             Sighting toReturn = new Sighting(
                     rs.getInt("sightId"),
-                    rs.getDate("sightDate"),
+                    rs.getDate("sightDate").toLocalDate(),
                     getSuperById(rs.getInt("superId")),
                     getLocationById(rs.getInt("locId"))
             );
@@ -157,10 +181,8 @@ public class SightingDBImpl implements SightingDao {
                     rs.getString("name"),
                     rs.getString("description"),
                     rs.getString("address"),
-                    new Coord(
-                            rs.getBigDecimal("lat"),
-                            rs.getBigDecimal("lon")
-                    )
+                    rs.getBigDecimal("lat"),
+                    rs.getBigDecimal("lon")
             );
             return toReturn;
         }

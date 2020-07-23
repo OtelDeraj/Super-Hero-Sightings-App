@@ -20,6 +20,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,12 @@ public class SuperDBImpl implements SuperDao {
 
     @Override
     public Super getSuperById(int id) throws SuperDaoException {
-        Super toReturn = template.queryForObject("SELECT * FROM Supers WHERE superId = ?", new SuperMapper(), id);
+        Super toReturn = null;
+        try{
+        toReturn = template.queryForObject("SELECT * FROM Supers WHERE superId = ?", new SuperMapper(), id);
+        } catch(EmptyResultDataAccessException ex){
+            throw new SuperDaoException("Get Super by id failed");
+        }
         if(toReturn == null) throw new SuperDaoException("No Super found for given ID");
         toReturn.setPowers(getPowersBySuperId(id));
         toReturn.setOrgs(getOrgsBySuperId(id));
@@ -46,7 +52,12 @@ public class SuperDBImpl implements SuperDao {
 
     @Override
     public Super getSuperByName(String name) throws SuperDaoException {
-        Super toReturn = template.queryForObject("SELECT * FROM Supers WHERE name = ?", new SuperMapper(), name);
+        Super toReturn = null;
+        try{
+        toReturn = template.queryForObject("SELECT * FROM Supers WHERE name = ?", new SuperMapper(), name);
+        } catch(EmptyResultDataAccessException ex){
+            throw new SuperDaoException("Get Super by name failed");
+        }
         if(toReturn == null) throw new SuperDaoException("No Super found for given Name");
         toReturn.setPowers(getPowersBySuperId(toReturn.getId()));
         toReturn.setOrgs(getOrgsBySuperId(toReturn.getId()));

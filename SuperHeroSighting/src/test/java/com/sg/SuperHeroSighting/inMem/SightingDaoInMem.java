@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dao.SightingDao;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.springframework.context.annotation.Profile;
@@ -38,7 +39,7 @@ public class SightingDaoInMem implements SightingDao{
     }
 
     @Override
-    public List<Sighting> getSightingsByDate(Date date) throws SightingDaoException {
+    public List<Sighting> getSightingsByDate(LocalDate date) throws SightingDaoException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -19,6 +19,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -36,16 +37,26 @@ public class OrgDBImpl implements OrgDao {
 
     @Override
     public Org getOrgById(int id) throws OrgDaoException {
-        Org toReturn = template.queryForObject("SELECT * FROM Orgs WHERE orgId = ?", new OrgMapper(), id);
-        if(toReturn == null) throw new OrgDaoException("Failed to find Org for given ID");
+        Org toReturn = null;
+        try{
+        toReturn = template.queryForObject("SELECT * FROM Orgs WHERE orgId = ?", new OrgMapper(), id);
+        } catch(EmptyResultDataAccessException ex){
+            throw new OrgDaoException("Get org by id failed");
+        }
+        if(toReturn == null) throw new OrgDaoException("No Org found for given ID");
         toReturn.setSupers(getSupersByOrgId(id));
         return toReturn;
     }
 
     @Override
     public Org getOrgByName(String name) throws OrgDaoException {
-        Org toReturn = template.queryForObject("SELECT * FROM Orgs WHERE name = ?", new OrgMapper(), name);
-        if(toReturn == null) throw new OrgDaoException("Failed to find Org for given ID");
+        Org toReturn = null;
+        try{
+        toReturn = template.queryForObject("SELECT * FROM Orgs WHERE name = ?", new OrgMapper(), name);
+        } catch(EmptyResultDataAccessException ex){
+            throw new OrgDaoException("Get org by id failed");
+        }
+        if(toReturn == null) throw new OrgDaoException("No org found for given name");
         toReturn.setSupers(getSupersByOrgId(toReturn.getId()));
         return toReturn;
     }

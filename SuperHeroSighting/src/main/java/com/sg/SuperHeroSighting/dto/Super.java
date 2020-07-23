@@ -5,6 +5,7 @@
  */
 package com.sg.SuperHeroSighting.dto;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
@@ -25,6 +26,8 @@ public class Super {
     private String description;
     private Set<Power> powers;
     private Set<Org> orgs;
+//    private Integer[] powerIds;
+//    private Integer[] orgIds;
 
     public Super(){
         
@@ -66,11 +69,13 @@ public class Super {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + this.id;
-        hash = 47 * hash + Objects.hashCode(this.name);
-        hash = 47 * hash + Objects.hashCode(this.description);
-        hash = 47 * hash + Objects.hashCode(this.powers);
-        hash = 47 * hash + Objects.hashCode(this.orgs);
+        hash = 67 * hash + this.id;
+        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 67 * hash + Objects.hashCode(this.description);
+        hash = 67 * hash + Objects.hashCode(this.powers);
+        hash = 67 * hash + Objects.hashCode(this.orgs);
+//        hash = 67 * hash + Arrays.deepHashCode(this.powerIds);
+//        hash = 67 * hash + Arrays.deepHashCode(this.orgIds);
         return hash;
     }
 
@@ -101,8 +106,16 @@ public class Super {
         if (!Objects.equals(this.orgs, other.orgs)) {
             return false;
         }
+//        if (!Arrays.deepEquals(this.powerIds, other.powerIds)) {
+//            return false;
+//        }
+//        if (!Arrays.deepEquals(this.orgIds, other.orgIds)) {
+//            return false;
+//        }
         return true;
     }
+
+    
 
     
     
@@ -132,24 +145,10 @@ public class Super {
     }
 
     /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * @return the description
      */
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -179,6 +178,48 @@ public class Super {
     public void setOrgs(Set<Org> orgs) {
         this.orgs = orgs;
     }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the powerIds
+     */
+//    public Integer[] getPowerIds() {
+//        return powerIds;
+//    }
+//
+//    /**
+//     * @param powerIds the powerIds to set
+//     */
+//    public void setPowerIds(Integer[] powerIds) {
+//        this.powerIds = powerIds;
+//    }
+//
+//    /**
+//     * @return the orgIds
+//     */
+//    public Integer[] getOrgIds() {
+//        return orgIds;
+//    }
+//
+//    /**
+//     * @param orgIds the orgIds to set
+//     */
+//    public void setOrgIds(Integer[] orgIds) {
+//        this.orgIds = orgIds;
+    
     
     
 }

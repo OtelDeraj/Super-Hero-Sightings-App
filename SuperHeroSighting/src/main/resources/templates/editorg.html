@@ -44,29 +44,41 @@ and open the template in the editor.
              <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
                     <form id="orgForm" action="/editorg" method="POST">
-                        <input type="hidden" th:value="${org.id}" name="toGet.id"/>
+                        <input type="hidden" th:value="${org.id}" name="id"/>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                                <label for="name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${org.name}" type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${org.name}" type="text" name="name" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('org.name')}">
+                                    <p th:each="error : ${#fields.errors('org.name')}"
+                                       class="alert alert-danger" th:text="${error}">Bad Name</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.description">Description: </label>
+                                <label for="description">Description: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${org.description}" type="text" name="toGet.description" class="form-control"/>
+                                <input th:value="${org.description}" type="text" name="description" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('org.description')}">
+                                    <p th:each="error : ${#fields.errors('org.description')}"
+                                       class="alert alert-danger" th:text="${error}">Bad description</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.address">Address: </label>
+                                <label for="address">Address: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${org.address}" type="text" name="toGet.address" class="form-control"/>
+                                <input th:value="${org.address}" type="text" name="address" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('org.address')}">
+                                    <p th:each="error : ${#fields.errors('org.address')}"
+                                       class="alert alert-danger" th:text="${error}">Bad address</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -74,7 +86,11 @@ and open the template in the editor.
                                 <label for="phone">Phone: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${org.phone}" type="tel" id="phone" name="toGet.phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control"/>
+                                <input th:value="${org.phone}" type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('org.phone')}">
+                                    <p th:each="error : ${#fields.errors('org.phone')}"
+                                       class="alert alert-danger" th:text="${error}">Bad phone</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -84,10 +100,14 @@ and open the template in the editor.
                             <div class="col-9">
                                 <div th:each="super : ${supers}">
                                     <input name="superIds" 
-                                           type="checkbox" 
+                                           type="checkbox"
                                            th:checked="${org.supers.contains(super)}"
                                            th:value="${super.id}"/>
                                     <span th:text="${super.name}"></span>
+                                </div>
+                                <div th:if="${#fields.hasErrors('org.supers')}">
+                                    <p th:each="error : ${#fields.errors('org.supers')}"
+                                       class="alert alert-danger" th:text="${error}">Bad supers</p>
                                 </div>
                             </div>
                         </div>

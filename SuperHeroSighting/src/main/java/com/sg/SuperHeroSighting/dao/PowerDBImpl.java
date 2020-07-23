@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -36,13 +37,21 @@ public class PowerDBImpl implements PowerDao {
     JdbcTemplate template;
 
     @Override
-    public Power getPowerById(int id) {
+    public Power getPowerById(int id) throws PowerDaoException {
+        try{
         return template.queryForObject("SELECT * FROM Powers WHERE powerId = ?", new PowerMapper(), id);
+        } catch(EmptyResultDataAccessException ex){
+            throw new PowerDaoException("Get Power by id failed");
+        }
     }
 
     @Override
-    public Power getPowerByName(String name) {
-        return template.queryForObject("SELECT * FROM Powers WHERE name = ?", new PowerMapper(), name);
+    public Power getPowerByName(String name) throws PowerDaoException {
+        try {
+            return template.queryForObject("SELECT * FROM Powers WHERE name = ?", new PowerMapper(), name);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new PowerDaoException("Get Power by name failed");
+        }
     }
 
     @Override
@@ -66,12 +75,12 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public Power addPower(Power toAdd) throws PowerDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         validatePowerData(toAdd);
-        try{
-        int affectedRows = template.update("INSERT INTO Powers(name) VALUES(?)", toAdd.getName());
-        if (affectedRows < 1) {
-            throw new BadUpdateException("Failed to add power to database");
-        }
-        } catch(DuplicateKeyException ex){
+        try {
+            int affectedRows = template.update("INSERT INTO Powers(name) VALUES(?)", toAdd.getName());
+            if (affectedRows < 1) {
+                throw new BadUpdateException("Failed to add power to database");
+            }
+        } catch (DuplicateKeyException ex) {
             throw new DuplicateNameException("Given name already exists.");
         }
         int newId = template.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
@@ -82,12 +91,12 @@ public class PowerDBImpl implements PowerDao {
     @Override
     public void editPower(Power toEdit) throws BadUpdateException, InvalidEntityException, DuplicateNameException {
         validatePowerData(toEdit);
-        try{
-        int affectedRows = template.update("UPDATE Powers SET name = ? WHERE powerId = ?", toEdit.getName(), toEdit.getId());
-        if (affectedRows < 1) {
-            throw new BadUpdateException("No rows updated");
-        }
-        } catch(DuplicateKeyException ex){
+        try {
+            int affectedRows = template.update("UPDATE Powers SET name = ? WHERE powerId = ?", toEdit.getName(), toEdit.getId());
+            if (affectedRows < 1) {
+                throw new BadUpdateException("No rows updated");
+            }
+        } catch (DuplicateKeyException ex) {
             throw new DuplicateNameException("Given name already exists.");
         }
     }
@@ -103,13 +112,15 @@ public class PowerDBImpl implements PowerDao {
             throw new BadUpdateException("More than one power deleted. This is a problem.");
         }
     }
-    
-    private void validatePowerData(Power p) throws InvalidEntityException{
-        if(p == null) throw new InvalidEntityException("Power object cannot be null");
-        if(p.getName() ==  null) throw new InvalidEntityException("Power fields cannot be null"); 
+
+    private void validatePowerData(Power p) throws InvalidEntityException {
+        if (p == null) {
+            throw new InvalidEntityException("Power object cannot be null");
+        }
+        if (p.getName() == null) {
+            throw new InvalidEntityException("Power fields cannot be null");
+        }
     }
-        
-    
 
     private static class PowerMapper implements RowMapper<Power> {
 

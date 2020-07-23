@@ -12,6 +12,7 @@ import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class SightingService { // TODO all the throws in this service will be ch
         }
     }
 
-    public List<Sighting> getSightingsByDate(Date d) throws EmptyResultException {
+    public List<Sighting> getSightingsByDate(LocalDate d) throws EmptyResultException {
         try {
             return sigDao.getSightingsByDate(d);
         } catch (SightingDaoException ex) {
@@ -129,7 +130,7 @@ public class SightingService { // TODO all the throws in this service will be ch
                 || toValidate.getSpottedSuper() == null) {
             throw new InvalidEntityException("Please make sure all fields have been entered.");
         }
-        if(toValidate.getDate().after(new Date())) throw new InvalidEntityException("Given date cannot be in the future."
+        if(toValidate.getDate().isAfter(LocalDate.now())) throw new InvalidEntityException("Given date cannot be in the future."
                 + " Unless you are a super. In that case, please sight yourself.");
     }
 

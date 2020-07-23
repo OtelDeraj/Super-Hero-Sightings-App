@@ -48,13 +48,17 @@ and open the template in the editor.
             <div style="padding: 10px" class="row m-4 border border-dark">
                 <div class="col-md-12">
                     <form id="powerForm" action="/editpower" method="POST">
-                        <input type="hidden" th:value="${power.id}" name="toGet.id"/>
+                        <input type="hidden" th:value="${power.id}" name="id"/>
                          <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                                <label for="name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-6">
-                                <input th:value="${power.name}" type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${power.name}" type="text" name="name" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('power.name')}">
+                                    <p th:each="error : ${#fields.errors('power.name')}"
+                                       class="alert alert-danger" th:text="${error}">Bad Name</p>
+                                </div>
                             </div>
                              <input class="col-3" type="submit"/>
                         </div>

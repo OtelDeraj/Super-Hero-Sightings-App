@@ -6,7 +6,10 @@
 package com.sg.SuperHeroSighting.dto;
 
 import java.awt.Point;
+import java.math.BigDecimal;
 import java.util.Objects;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -26,7 +29,16 @@ public class Location {
     @NotBlank(message="Please enter an address")
     @Size(max=60, message="Address cannot be more than 60 characters long")
     private String address;
-    private Coord coord; // coord object holds lat and lon values
+//    @NotBlank(message="Please enter a latitude")
+    @DecimalMax("90.00000")
+    @DecimalMin("-90.00000")
+    private BigDecimal lat;
+    
+//    @NotBlank(message="Please enter a longitude")
+    @DecimalMax("180.00000")
+    @DecimalMin("-180.00000")
+    private BigDecimal lon;
+    
     
     public Location(){
         
@@ -38,34 +50,38 @@ public class Location {
         this.name = that.name;
         this.description = that.description;
         this.address = that.address;
-        this.coord = that.coord;
+        this.lat = that.lat;
+        this.lon = that.lon;
     }
     
     // use for creation
-    public Location(String name, String description, String address, Coord coord){
+    public Location(String name, String description, String address, BigDecimal lat, BigDecimal lon){
         this.name = name;
         this.description = description;
         this.address = address;
-        this.coord = coord;
+        this.lat = lat;
+        this.lon = lon;
     }
     
     // use for testing
-    public Location(int id, String name, String description, String address, Coord coord){
+    public Location(int id, String name, String description, String address, BigDecimal lat, BigDecimal lon){
         this.id = id;
         this.name = name;
         this.description = description;
         this.address = address;
-        this.coord = coord;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + this.id;
-        hash = 67 * hash + Objects.hashCode(this.name);
-        hash = 67 * hash + Objects.hashCode(this.description);
-        hash = 67 * hash + Objects.hashCode(this.address);
-        hash = 67 * hash + Objects.hashCode(this.coord);
+        int hash = 5;
+        hash = 19 * hash + this.id;
+        hash = 19 * hash + Objects.hashCode(this.name);
+        hash = 19 * hash + Objects.hashCode(this.description);
+        hash = 19 * hash + Objects.hashCode(this.address);
+        hash = 19 * hash + Objects.hashCode(this.lat);
+        hash = 19 * hash + Objects.hashCode(this.lon);
         return hash;
     }
 
@@ -93,11 +109,15 @@ public class Location {
         if (!Objects.equals(this.address, other.address)) {
             return false;
         }
-        if (!Objects.equals(this.coord, other.coord)) {
+        if (!Objects.equals(this.lat, other.lat)) {
+            return false;
+        }
+        if (!Objects.equals(this.lon, other.lon)) {
             return false;
         }
         return true;
     }
+
 
     
     
@@ -159,17 +179,33 @@ public class Location {
     }
 
     /**
-     * @return the coord
+     * @return the lat
      */
-    public Coord getCoord() {
-        return coord;
+    public BigDecimal getLat() {
+        return lat;
     }
 
     /**
-     * @param coord the coord to set
+     * @param lat the lat to set
      */
-    public void setCoord(Coord coord) {
-        this.coord = coord;
+    public void setLat(BigDecimal lat) {
+        this.lat = lat;
     }
+
+    /**
+     * @return the lon
+     */
+    public BigDecimal getLon() {
+        return lon;
+    }
+
+    /**
+     * @param lon the lon to set
+     */
+    public void setLon(BigDecimal lon) {
+        this.lon = lon;
+    }
+
+    
     
 }

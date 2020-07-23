@@ -44,17 +44,22 @@ and open the template in the editor.
             <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
                     <form id="sightingFormEdit" action="/editsighting" method="POST">
+                        <input type="hidden" th:value="${sighting.id}" name="id"/>
                         <div class="form-group row">
                             <div class="col-3">
                                 <label for="sDate" class="col-3 col-form-lable">Date: </label>
                             </div>
                             <div class="col-9">
                                 <input type="date" th:value="${sighting.date}" name="sDate" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('sighting.sDate')}">
+                                    <p th:each="error : ${#fields.errors('sighting.sDate')}"
+                                       class="alert alert-danger" th:text="${error}">Bad date</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <select name="toGet.spottedSuper.id">
+                                <select name="spottedSuper.id">
                                     <option th:each="super : ${supers}" 
                                             th:value="${super.id}"
                                             th:selected="${sighting.spottedSuper.id == super.id}"
@@ -62,7 +67,7 @@ and open the template in the editor.
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <select name="toGet.location.id">
+                                <select name="location.id">
                                     <option th:each="location : ${locations}" 
                                             th:value="${location.id}"
                                             th:selected="${sighting.location.id == location.id}"

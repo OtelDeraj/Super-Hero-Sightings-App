@@ -50,10 +50,14 @@ and open the template in the editor.
                     <form id="powerForm" action="/addpower" method="POST">
                          <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                                <label for="name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-6">
-                                <input type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${power.name}" type="text" name="name" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('power.name')}">
+                                    <p th:each="error : ${#fields.errors('power.name')}"
+                                       class="alert alert-danger" th:text="${error}">Bad Name</p>
+                                </div>
                             </div>
                              <input class="col-3" type="submit"/>
                         </div>

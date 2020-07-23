@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.TestAppConfig;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -79,8 +80,8 @@ public class SightingDBImplTest {
         assertEquals("Third Loc", toTest.getLocation().getName());
         assertEquals("Third Desc", toTest.getLocation().getDescription());
         assertEquals("Third Address", toTest.getLocation().getAddress());
-        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getLat());
+        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getLon());
     }
 
     /**
@@ -100,8 +101,8 @@ public class SightingDBImplTest {
         assertEquals("Third Loc", toTest.getLocation().getName());
         assertEquals("Third Desc", toTest.getLocation().getDescription());
         assertEquals("Third Address", toTest.getLocation().getAddress());
-        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getLat());
+        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getLon());
     }
 
     /**
@@ -121,8 +122,8 @@ public class SightingDBImplTest {
         assertEquals("Third Loc", toTest.getLocation().getName());
         assertEquals("Third Desc", toTest.getLocation().getDescription());
         assertEquals("Third Address", toTest.getLocation().getAddress());
-        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getLat());
+        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getLon());
     }
 
     /**
@@ -131,7 +132,7 @@ public class SightingDBImplTest {
     @Test
     public void testGetSightingsByDate() throws SightingDaoException {
         Sighting toFind = dao.getSightingById(1);
-        Date toSearch = toFind.getDate();
+        LocalDate toSearch = toFind.getDate();
         List<Sighting> forDate = dao.getSightingsByDate(toSearch);
         assertEquals(1, forDate.size());
         Sighting toTest = forDate.get(0);
@@ -144,8 +145,8 @@ public class SightingDBImplTest {
         assertEquals("Third Loc", toTest.getLocation().getName());
         assertEquals("Third Desc", toTest.getLocation().getDescription());
         assertEquals("Third Address", toTest.getLocation().getAddress());
-        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), toTest.getLocation().getLat());
+        assertEquals(new BigDecimal("-90.00000"), toTest.getLocation().getLon());
     }
 
     /**
@@ -165,8 +166,8 @@ public class SightingDBImplTest {
         assertEquals("Third Loc", first.getLocation().getName());
         assertEquals("Third Desc", first.getLocation().getDescription());
         assertEquals("Third Address", first.getLocation().getAddress());
-        assertEquals(new BigDecimal("-45.00000"), first.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("-90.00000"), first.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("-45.00000"), first.getLocation().getLat());
+        assertEquals(new BigDecimal("-90.00000"), first.getLocation().getLon());
         Sighting last = allSightings.get(allSightings.size() - 1);
         assertEquals(3, last.getId());
         assertEquals("2020-10-15", last.getDate().toString());
@@ -177,8 +178,8 @@ public class SightingDBImplTest {
         assertEquals("First Loc", last.getLocation().getName());
         assertEquals("First Desc", last.getLocation().getDescription());
         assertEquals("First Address", last.getLocation().getAddress());
-        assertEquals(new BigDecimal("90.00000"), last.getLocation().getCoord().getLat());
-        assertEquals(new BigDecimal("180.00000"), last.getLocation().getCoord().getLon());
+        assertEquals(new BigDecimal("90.00000"), last.getLocation().getLat());
+        assertEquals(new BigDecimal("180.00000"), last.getLocation().getLon());
         
     }
 

@@ -49,18 +49,22 @@ and open the template in the editor.
                                 <label for="sDate" class="col-3 col-form-lable">Date: </label>
                             </div>
                             <div class="col-9">
-                                <input type="date" name="sDate" class="form-control"/>
+                                <input th:value="${sighting.date}" type="date" name="sDate" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('sighting.sDate')}">
+                                    <p th:each="error : ${#fields.errors('sighting.sDate')}"
+                                       class="alert alert-danger" th:text="${error}">Bad date</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <select name="toGet.spottedSuper.id">
+                                <select name="spottedSuper.id">
                                     <option th:each="super : ${supers}" th:value="${super.id}"
                                             th:text="${super.name}"></option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <select name="toGet.location.id">
+                                <select name="location.id">
                                     <option th:each="location : ${locations}" th:value="${location.id}"
                                             th:text="${location.name}"></option>
                                 </select>

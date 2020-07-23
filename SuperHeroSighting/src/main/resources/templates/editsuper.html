@@ -43,24 +43,29 @@ and open the template in the editor.
             <div style="padding: 10px" class="row m-4 border border-dark"> <!-- this is for the POST form -->
                 <div class="col-md-12">
                     <form id="superFormEdit" action="/editsuper" method="POST">
-                        <div th:hidden="${isValid}">
-                            <p th:text="${errorMessage}"></p>
-                        </div>
-                        <input type="hidden" th:value="${super.id}" name="toGet.id"/>
+                        <input type="hidden" th:value="${super.id}" name="id"/>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.name" class="col-3 col-form-lable">Name: </label>
+                                <label for="name" class="col-3 col-form-lable">Name: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${super.name}" type="text" name="toGet.name" class="form-control"/>
+                                <input th:value="${super.name}" type="text" name="name" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('super.name')}">
+                                    <p th:each="error : ${#fields.errors('super.name')}"
+                                       class="alert alert-danger" th:text="${error}">Bad name</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-3">
-                                <label for="toGet.description">Description: </label>
+                                <label for="description">Description: </label>
                             </div>
                             <div class="col-9">
-                                <input th:value="${super.description}" type="text" name="toGet.description" class="form-control"/>
+                                <input th:value="${super.description}" type="text" name="description" class="form-control"/>
+                                <div th:if="${#fields.hasErrors('super.description')}">
+                                    <p th:each="error : ${#fields.errors('super.description')}"
+                                       class="alert alert-danger" th:text="${error}">Bad description</p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -73,17 +78,23 @@ and open the template in the editor.
                                            th:value="${power.id}"/>
                                     <span th:text="${power.name}"></span>
                                 </div>
+                                <div th:if="${#fields.hasErrors('super.powers')}">
+                                    <p th:each="error : ${#fields.errors('super.powers')}"
+                                       class="alert alert-danger" th:text="${error}">Bad powers</p>
+                                </div>
                             </div>
                             <div class="col-6">
                                 <label for="orgList">Org Affiliations: </label>
-
-
                                 <div th:each="org : ${orgs}">
                                     <input name="orgIds"
                                            type="checkbox" 
                                            th:checked="${super.orgs.contains(org)}"
                                            th:value="${org.id}"/>
                                     <span th:text="${org.name}"></span>
+                                </div>
+                                <div th:if="${#fields.hasErrors('super.orgs')}">
+                                    <p th:each="error : ${#fields.errors('super.orgs')}"
+                                       class="alert alert-danger" th:text="${error}">Bad orgs</p>
                                 </div>
                             </div>
                         </div>

@@ -5,9 +5,11 @@
  */
 package com.sg.SuperHeroSighting.dto;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -29,9 +31,11 @@ public class Org {
     private String address;
     @NotBlank(message="Please provide a phone number for this organization")
     @Size(max=15, message="Phone number must be 15 characters or less")
-    @Pattern(regexp="^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$")
+    @Pattern(regexp="^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$", message="Pattern must match XXX-XXX-XXXX")
     private String phone;
     private Set<Super> supers;
+//    @NotNull(message="Please select one or more Super(s)")
+//    private Integer[] superIds;
     
     
     public Org(){
@@ -78,13 +82,14 @@ public class Org {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + this.id;
-        hash = 17 * hash + Objects.hashCode(this.name);
-        hash = 17 * hash + Objects.hashCode(this.description);
-        hash = 17 * hash + Objects.hashCode(this.address);
-        hash = 17 * hash + Objects.hashCode(this.phone);
-        hash = 17 * hash + Objects.hashCode(this.supers);
+        int hash = 3;
+        hash = 31 * hash + this.id;
+        hash = 31 * hash + Objects.hashCode(this.name);
+        hash = 31 * hash + Objects.hashCode(this.description);
+        hash = 31 * hash + Objects.hashCode(this.address);
+        hash = 31 * hash + Objects.hashCode(this.phone);
+        hash = 31 * hash + Objects.hashCode(this.supers);
+//        hash = 31 * hash + Arrays.deepHashCode(this.superIds);
         return hash;
     }
 
@@ -118,8 +123,13 @@ public class Org {
         if (!Objects.equals(this.supers, other.supers)) {
             return false;
         }
+//        if (!Arrays.deepEquals(this.superIds, other.superIds)) {
+//            return false;
+//        }
         return true;
     }
+
+    
     
     
 
@@ -206,4 +216,18 @@ public class Org {
     public void setSupers(Set<Super> supers) {
         this.supers = supers;
     }
+    
+    /**
+     * @return the supers
+     */
+//    public Integer[] getSuperIds() {
+//        return superIds;
+//    }
+//
+//    /**
+//     * @param superIds
+//     */
+//    public void setSuperIds(Integer[] superIds) {
+//        this.superIds = superIds;
+//    }
 }

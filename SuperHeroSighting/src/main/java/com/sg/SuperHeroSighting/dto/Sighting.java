@@ -5,11 +5,13 @@
  */
 package com.sg.SuperHeroSighting.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -18,28 +20,27 @@ import javax.validation.constraints.Pattern;
 public class Sighting {
     
     private int id;
-//    @Pattern(regexp="^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}$")
-    @NotBlank(message="Please enter a date for this sighting")
-    @Past(message="Sighting date must be in the past")
-    private Date date;
-    @NotBlank(message="Please select which super was spotted")
+    private LocalDate date;
     private Super spottedSuper;
-    @NotBlank(message="Please select a location for this sighting")
     private Location location;
+//    @Pattern(regexp = "^(\\d{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$", message = "Date improperly formatted")
+    @NotBlank(message = "Date is required")
+    @Size(min = 10, max = 10, message = "Date must be 10 characters")
+    private String sDate;
     
     public Sighting(){
         
     }
     
     // creation
-    public Sighting(Date date, Super spottedSuper, Location location){
+    public Sighting(LocalDate date, Super spottedSuper, Location location){
         this.date = date;
         this.spottedSuper = spottedSuper;
         this.location = location;
     }
     
     // testing & mapping
-    public Sighting(int id, Date date, Super spottedSuper, Location location){
+    public Sighting(int id, LocalDate date, Super spottedSuper, Location location){
         this.id = id;
         this.date = date;
         this.spottedSuper = spottedSuper;
@@ -48,11 +49,12 @@ public class Sighting {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + this.id;
-        hash = 67 * hash + Objects.hashCode(this.date);
-        hash = 67 * hash + Objects.hashCode(this.spottedSuper);
-        hash = 67 * hash + Objects.hashCode(this.location);
+        int hash = 7;
+        hash = 29 * hash + this.id;
+        hash = 29 * hash + Objects.hashCode(this.date);
+        hash = 29 * hash + Objects.hashCode(this.spottedSuper);
+        hash = 29 * hash + Objects.hashCode(this.location);
+        hash = 29 * hash + Objects.hashCode(this.sDate);
         return hash;
     }
 
@@ -71,6 +73,9 @@ public class Sighting {
         if (this.id != other.id) {
             return false;
         }
+        if (!Objects.equals(this.sDate, other.sDate)) {
+            return false;
+        }
         if (!Objects.equals(this.date, other.date)) {
             return false;
         }
@@ -82,6 +87,8 @@ public class Sighting {
         }
         return true;
     }
+
+    
 
     
     
@@ -105,14 +112,14 @@ public class Sighting {
     /**
      * @return the date
      */
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -144,5 +151,18 @@ public class Sighting {
         this.location = location;
     }
     
+    /**
+     * @return the sDate
+     */
+    public String getsDate() {
+        return sDate;
+    }
+
+    /**
+     * @param sDate the sDate to set
+     */
+    public void setsDate(String sDate) {
+        this.sDate = sDate;
+    }
     
 }

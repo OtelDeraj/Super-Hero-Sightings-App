@@ -9,11 +9,11 @@ import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.dto.Super;
-import com.sg.SuperHeroSighting.dto.SuperVM;
 import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
+import com.sg.SuperHeroSighting.exceptions.InvalidNameException;
 import com.sg.SuperHeroSighting.service.OrgService;
 import com.sg.SuperHeroSighting.service.PowerService;
 import com.sg.SuperHeroSighting.service.SightingService;
@@ -57,25 +57,16 @@ public class SuperController {
 
     @GetMapping("/supers")
     public String displaySupersPage(Model pageModel) {
-//        Super toAdd = new Super();
-//        toAdd.setOrgs(new HashSet<>());
-//        toAdd.setPowers(new HashSet<>());
         List<Super> allSupers = new ArrayList<>();
         List<Org> allOrgs = new ArrayList<>();
         List<Power> allPowers = new ArrayList<>();
         try {
             allSupers = service.getAllSupers();
-        } catch (EmptyResultException ex) {
-        }
-        try {
+            allPowers = powServ.getAllPowers();
             allOrgs = orgServ.getAllOrgs();
         } catch (EmptyResultException ex) {
         }
-        try {
-            allPowers = powServ.getAllPowers();
-        } catch (EmptyResultException ex) {
-        }
-//        pageModel.addAttribute("newsuper", toAdd);
+        pageModel.addAttribute("super", new Super());
         pageModel.addAttribute("powers", allPowers);
         pageModel.addAttribute("orgs", allOrgs);
         pageModel.addAttribute("supers", allSupers);
@@ -100,18 +91,52 @@ public class SuperController {
     }
 
     @PostMapping("addsuper")
-    public String addSuper(SuperVM toAdd) throws InvalidIdException, InvalidEntityException, DuplicateNameException {
-        Set<Power> allPowers = new HashSet<>();
-        Set<Org> allOrgs = new HashSet<>();
-        for (Integer p : toAdd.getPowerIds()) {
-            allPowers.add(powServ.getPowerById(p));
+    public String addSuper(@Valid Super toAdd, BindingResult result, HttpServletRequest request, Model pageModel) throws InvalidIdException, InvalidEntityException, DuplicateNameException {
+        List<Super> allSupers = new ArrayList<>();
+        List<Power> allPowers = new ArrayList<>();
+        List<Org> allOrgs = new ArrayList<>();
+        Set<Power> powers = new HashSet<>();
+        Set<Org> orgs = new HashSet<>();
+        String[] powerIds = request.getParameterValues("powerIds");
+        String[] orgIds = request.getParameterValues("orgIds");
+        try {
+            service.getSuperByName(toAdd.getName());
+            FieldError nameError = new FieldError("super", "name", "Super name already exists");
+            result.addError(nameError);
+        } catch (InvalidNameException ex) {
         }
-        for (Integer o : toAdd.getOrgIds()) {
-            allOrgs.add(orgServ.getOrgById(o));
+        if (powerIds == null) {
+            FieldError powerError = new FieldError("super", "powers", "Please select at least one power.");
+            result.addError(powerError);
+        } else {
+            for (String p : powerIds) {
+                powers.add(powServ.getPowerById(Integer.parseInt(p)));
+            }
         }
-        toAdd.getToGet().setPowers(allPowers);
-        toAdd.getToGet().setOrgs(allOrgs);
-        service.createSuper(toAdd.getToGet());
+        if (orgIds == null) {
+            FieldError orgError = new FieldError("super", "orgs", "Please select at least one org.");
+            result.addError(orgError);
+        } else {
+            for (String o : orgIds) {
+                orgs.add(orgServ.getOrgById(Integer.parseInt(o)));
+            }
+        }
+        toAdd.setPowers(powers);
+        toAdd.setOrgs(orgs);
+        if (result.hasErrors()) {
+            try {
+                allSupers = service.getAllSupers();
+                allPowers = powServ.getAllPowers();
+                allOrgs = orgServ.getAllOrgs();
+            } catch (EmptyResultException ex) {
+            }
+            pageModel.addAttribute("super", toAdd);
+            pageModel.addAttribute("powers", allPowers);
+            pageModel.addAttribute("orgs", allOrgs);
+            pageModel.addAttribute("supers", allSupers);
+            return "supers";
+        }
+        service.createSuper(toAdd);
         return "redirect:/supers";
     }
 
@@ -138,28 +163,54 @@ public class SuperController {
     }
 
     @PostMapping("editsuper")
-    public String editSuper(SuperVM toEdit, Model pageModel) throws InvalidIdException, EmptyResultException {
-        Set<Power> powersToEdit = new HashSet<>();
-        Set<Org> orgsToEdit = new HashSet<>();
-        for (Integer p : toEdit.getPowerIds()) {
-            powersToEdit.add(powServ.getPowerById(p));
-        }
-        for (Integer o : toEdit.getOrgIds()) {
-            orgsToEdit.add(orgServ.getOrgById(o));
-        }
-        toEdit.getToGet().setPowers(powersToEdit);
-        toEdit.getToGet().setOrgs(orgsToEdit);
+    public String editSuper(@Valid Super toEdit, BindingResult result, HttpServletRequest request, Model pageModel) throws InvalidIdException, EmptyResultException, InvalidEntityException, DuplicateNameException {
+        List<Super> allSupers = new ArrayList<>();
+        List<Power> allPowers = new ArrayList<>();
+        List<Org> allOrgs = new ArrayList<>();
+        Set<Power> powers = new HashSet<>();
+        Set<Org> orgs = new HashSet<>();
+        String[] powerIds = request.getParameterValues("powerIds");
+        String[] orgIds = request.getParameterValues("orgIds");
         try {
-            service.editSuper(toEdit.getToGet());
-        } catch (DuplicateNameException | InvalidEntityException ex) {
-            pageModel.addAttribute("supers", service.getAllSupers());
-            pageModel.addAttribute("powers", powServ.getAllPowers());
-            pageModel.addAttribute("orgs", orgServ.getAllOrgs());
-            pageModel.addAttribute("super", toEdit.getToGet());
-            pageModel.addAttribute("isValid", false);
-            pageModel.addAttribute("errorMessage", ex.getMessage());
+            Super toCheck = service.getSuperByName(toEdit.getName());
+            if (toCheck.getId() != toEdit.getId()) {
+                FieldError nameError = new FieldError("super", "name", "Super name already exists");
+                result.addError(nameError);
+            }
+        } catch (InvalidNameException ex) {
+        }
+        if (powerIds == null) {
+            FieldError powerError = new FieldError("super", "powers", "Please select at least one power.");
+            result.addError(powerError);
+        } else {
+            for (String p : powerIds) {
+                powers.add(powServ.getPowerById(Integer.parseInt(p)));
+            }
+        }
+        if (orgIds == null) {
+            FieldError orgError = new FieldError("super", "orgs", "Please select at least one org.");
+            result.addError(orgError);
+        } else {
+            for (String o : orgIds) {
+                orgs.add(orgServ.getOrgById(Integer.parseInt(o)));
+            }
+        }
+        toEdit.setPowers(powers);
+        toEdit.setOrgs(orgs);
+        if (result.hasErrors()) {
+            try {
+                allSupers = service.getAllSupers();
+                allPowers = powServ.getAllPowers();
+                allOrgs = orgServ.getAllOrgs();
+            } catch (EmptyResultException ex) {
+            }
+            pageModel.addAttribute("super", toEdit);
+            pageModel.addAttribute("powers", allPowers);
+            pageModel.addAttribute("orgs", allOrgs);
+            pageModel.addAttribute("supers", allSupers);
             return "editsuper";
-        } 
+        }
+        service.editSuper(toEdit);
         return "redirect:/supers";
     }
 
