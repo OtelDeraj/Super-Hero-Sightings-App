@@ -52,7 +52,7 @@ public class Org {
         this.supers = that.supers;
     }
     
-    // used for Org Mapping
+    // used for Org Mapping and SuperService Tests
     public Org(int id, String name, String description, String address, String phone){
         this.id = id;
         this.name = name;
