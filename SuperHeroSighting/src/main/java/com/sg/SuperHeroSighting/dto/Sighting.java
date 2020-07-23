@@ -6,11 +6,8 @@
 package com.sg.SuperHeroSighting.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**

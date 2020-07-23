@@ -149,6 +149,10 @@ public class OrgDBImpl implements OrgDao {
                 o.getPhone() == null || o.getSupers() == null){
             throw new InvalidEntityException("Org fields cannot be null");
         }
+        if(o.getName().trim().length() > 50) throw new InvalidEntityException("Org name must be 50 characters or less");
+        if(o.getDescription().trim().length() > 255) throw new InvalidEntityException("Org description must be 255 characters or less");
+        if(o.getAddress().trim().length() > 60) throw new InvalidEntityException("Org address must be 60 characters or less");
+        if(o.getPhone().trim().length() > 15) throw new InvalidEntityException("Org phone number must be 15 characters or less");
     }
     
     private static class OrgMapper implements RowMapper<Org> {

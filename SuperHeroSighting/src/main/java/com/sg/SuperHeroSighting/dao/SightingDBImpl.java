@@ -5,18 +5,15 @@
  */
 package com.sg.SuperHeroSighting.dao;
 
-import com.sg.SuperHeroSighting.dto.Coord;
 import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.dto.Sighting;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SightingDaoException;
-import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -48,11 +45,11 @@ public class SightingDBImpl implements SightingDao {
 
     @Override
     public List<Sighting> getSightingsBySuperId(int id) throws SightingDaoException { // TODO add validation for all of these returning lists
-        try {
-            return template.query("SELECT * FROM Sightings WHERE superId = ?", new SightingMapper(), id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new SightingDaoException("Get sighting by name failed");
+        List<Sighting> toReturn = template.query("SELECT * FROM Sightings WHERE superId = ?", new SightingMapper(), id);
+        if(toReturn.isEmpty()){
+            throw new SightingDaoException("Get sightings by super ID failed");
         }
+        return toReturn;
     }
 
     @Override

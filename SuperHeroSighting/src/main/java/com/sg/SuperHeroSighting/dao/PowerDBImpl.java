@@ -120,6 +120,7 @@ public class PowerDBImpl implements PowerDao {
         if (p.getName() == null) {
             throw new InvalidEntityException("Power fields cannot be null");
         }
+        if(p.getName().trim().length() > 30) throw new InvalidEntityException("Power name must be 30 characters or less");
     }
 
     private static class PowerMapper implements RowMapper<Power> {

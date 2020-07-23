@@ -12,6 +12,7 @@ import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.LocationDaoException;
 import java.awt.Point;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -53,20 +54,28 @@ public class LocationDBImpl implements LocationDao {
     }
 
     @Override
-    public Location getLocationByAddress(String address) {
+    public Location getLocationByAddress(String address) throws LocationDaoException {
+        try{
         return template.queryForObject("SELECT * FROM Locations WHERE address = ?", new LocationMapper(), address);
+        } catch (EmptyResultDataAccessException ex){
+            throw new LocationDaoException("Get location by address failed");
+        }
     }
 
     @Override
-    public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException {
+    public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException, LocationDaoException {
         if (toSearch == null) {
             throw new InvalidEntityException("Coord toSearch cannot be null");
         }
         if (toSearch.getLat() == null || toSearch.getLon() == null) {
             throw new InvalidEntityException("Coord toSearch cannot have null fields");
         }
+        try{
         return template.queryForObject("SELECT * FROM Locations WHERE lat = ? AND lon = ?",
                 new LocationMapper(), toSearch.getLat(), toSearch.getLon());
+        } catch (EmptyResultDataAccessException ex){
+            throw new LocationDaoException("Get location by coord failed");
+        }
     }
 
     @Override
@@ -134,6 +143,11 @@ public class LocationDBImpl implements LocationDao {
                 || l.getLat() == null || l.getLon() == null) {
             throw new InvalidEntityException("Location fields cannot be null");
         }
+        if(l.getName().trim().length() > 50) throw new InvalidEntityException("Location name must be 50 characters or less");
+        if(l.getDescription().trim().length() > 255) throw new InvalidEntityException("Location description must be 255 characters or less");
+        if(l.getAddress().trim().length() > 60) throw new InvalidEntityException("Locatoin address must be 60 characters or less");
+        if(l.getLat().compareTo(new BigDecimal("90.00000")) == 1 || l.getLat().compareTo(new BigDecimal("-90.00000")) == -1) throw new InvalidEntityException("Latitude must be between -90 and 90");
+        if(l.getLon().compareTo(new BigDecimal("180.00000")) == 1 || l.getLon().compareTo(new BigDecimal("-180.00000")) == -1) throw new InvalidEntityException("Longitude must be between -180 and 180");
     }
 
     private static class LocationMapper implements RowMapper<Location> {

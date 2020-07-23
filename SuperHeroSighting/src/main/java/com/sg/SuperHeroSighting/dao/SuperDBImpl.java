@@ -183,6 +183,8 @@ public class SuperDBImpl implements SuperDao {
         if(s.getName() == null || s.getDescription() == null || s.getOrgs() == null || s.getPowers() == null){
             throw new InvalidEntityException("Super fields cannot be null");
         }
+        if(s.getName().trim().length() > 30) throw new InvalidEntityException("Super name must be 30 characters or less");
+        if(s.getDescription().trim().length() > 255) throw new InvalidEntityException("Super description must be 255 characters or less");
     }
     
     private static class SuperMapper implements RowMapper<Super> {

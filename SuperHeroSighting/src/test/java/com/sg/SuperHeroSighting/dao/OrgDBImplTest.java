@@ -12,9 +12,12 @@ import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,7 +146,7 @@ public class OrgDBImplTest {
      * Test of createOrg method, of class OrgDBImpl.
      */
     @Test
-    public void testCreateOrg() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+    public void testCreateOrgGoldenPath() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         Super sup1 = new Super(1, "First Hero", "First HD");
         Set<Super> superSet = new HashSet<>();
         superSet.add(sup1);
@@ -156,12 +159,142 @@ public class OrgDBImplTest {
         assertEquals(toCreate.getPhone(), returned.getPhone());
         assertEquals(toCreate.getSupers(), toCreate.getSupers());
     }
+    
+    @Test
+    public void testCreateOrgNullName() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org(null, "Fourth OD", "Fourth Adr", "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgBadName() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org(createBadName(), "Fourth OD", "Fourth Adr", "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgDuplicateName() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("First Org", "Fourth OD", "Fourth Adr", "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit DuplicateNameException");
+        } catch (DuplicateNameException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgNullDesc() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", null, "Fourth Adr", "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgBadDesc() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", createBadDescription(), "Fourth Adr", "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgNullAddress() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", "Fourth OD", null, "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgBadAddress() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", "Fourth OD", createBadAddress(), "888-111-9999", superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgNullPhone() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", "Fourth OD", "Fourth Adr", null, superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgBadPhone() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", "Fourth OD", "Fourth Adr", createBadPhone(), superSet);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testCreateOrgNullSuper() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toCreate = new Org("Fourth Org", "Fourth OD", "Fourth Adr", "888-111-9999", null);
+            dao.createOrg(toCreate);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
 
     /**
      * Test of editOrg method, of class OrgDBImpl.
      */
     @Test
-    public void testEditOrg() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+    public void testEditOrgGoldenPath() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         Super sup1 = new Super(1, "First Hero", "First HD");
         Set<Super> superSet = new HashSet<>();
         superSet.add(sup1);
@@ -181,6 +314,133 @@ public class OrgDBImplTest {
         assertEquals("First Adr PE", postEdit.getAddress());
         assertEquals("777-111-9999", postEdit.getPhone());
         assertEquals(1, postEdit.getSupers().size());
+    }
+    
+    @Test
+    public void testEditOrgNullName() throws OrgDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, null, "First OD PE", "First Adr PE", "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgBadName() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, createBadName(), "First OD PE", "First Adr PE", "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgDuplicateName() throws OrgDaoException, BadUpdateException, DuplicateNameException, InvalidEntityException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "Second Org", "First OD PE", "First Adr PE", "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit DuplicateNameException");
+        } catch (DuplicateNameException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgNullDesc() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", null, "First Adr PE", "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgBadDesc() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", createBadDescription(), "First Adr PE", "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgNullAddress() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", "First OD PE", null, "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgBadAddress() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", "First OD PE", createBadAddress(), "777-111-9999", superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgNullPhone() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", "First OD PE", "First Adr PE", null, superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgBadPhone() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super sup1 = new Super(1, "First Hero", "First HD");
+            Set<Super> superSet = new HashSet<>();
+            superSet.add(sup1);
+            Org toEdit = new Org(1, "First Org PE", "First OD PE", "First Adr PE", createBadPhone(), superSet);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditOrgNullSuper() throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Org toEdit = new Org(1, "First Org PE", "First OD PE", "First Adr PE", "777-111-9999", null);
+            dao.editOrg(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
     }
 
     /**
@@ -209,4 +469,27 @@ public class OrgDBImplTest {
         assertEquals(1, last.getSupers().size());
     }
     
+    private String createBadName(){
+        char[] chars = new char[51];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
+    }
+    
+    private String createBadAddress(){
+        char[] chars = new char[61];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
+    }
+    
+    private String createBadPhone(){
+        char[] chars = new char[16];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
+    }
+    
+    private String createBadDescription(){
+        char[] chars = new char[256];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
+    }
 }

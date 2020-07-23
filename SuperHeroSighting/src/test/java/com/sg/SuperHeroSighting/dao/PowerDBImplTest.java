@@ -11,7 +11,10 @@ import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.PowerDaoException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,6 +78,16 @@ public class PowerDBImplTest {
         assertEquals(1, toTest.getId());
         assertEquals("First Power", toTest.getName());
     }
+    
+    @Test
+    public void testGetPowerByBadId() {
+        try {
+            dao.getPowerById(-1);
+            fail("Should have hit PowerDaoException");
+        } catch (PowerDaoException ex) {
+        }
+        
+    }
 
     /**
      * Test of getPowerByName method, of class PowerDBImpl.
@@ -84,6 +97,16 @@ public class PowerDBImplTest {
         Power toTest = dao.getPowerByName("Second Power");
         assertEquals(2, toTest.getId());
         assertEquals("Second Power", toTest.getName());
+    }
+    
+    @Test
+    public void testGetPowerByBadName() {
+        try {
+            dao.getPowerByName(null);
+            fail("Should have hit PowerDaoException");
+        } catch (PowerDaoException ex) {
+        }
+        
     }
 
     /**
@@ -100,6 +123,18 @@ public class PowerDBImplTest {
         assertEquals(3, last.getId());
         assertEquals("Third Power", last.getName());
     }
+    
+    @Test
+    public void testGetAllPowersEmptyReturn() {
+        try {
+            template.update("DELETE FROM Super_Powers");
+            template.update("DELETE FROM Powers");
+            dao.getAllPowers();
+            fail("Should have hit PowerDaoException");
+        } catch (PowerDaoException ex) {
+        }
+        
+    }
 
     /**
      * Test of getPowersForSuperId method, of class PowerDBImpl.
@@ -115,6 +150,15 @@ public class PowerDBImplTest {
         assertEquals(2, last.getId());
         assertEquals("Second Power", last.getName());
     }
+    
+    @Test
+    public void testGetPowersForBadSuperId() {
+        try {
+            dao.getPowersForSuperId(-1);
+            fail("Should have hit PowerDaoException");
+        } catch (PowerDaoException ex) {
+        }
+    }
 
     /**
      * Test of addPower method, of class PowerDBImpl.
@@ -126,18 +170,86 @@ public class PowerDBImplTest {
         assertEquals(4, returned.getId());
         assertEquals("Fourth Power", returned.getName());
     }
+    
+    @Test
+    public void testAddPowerDuplicateName() throws PowerDaoException, BadUpdateException, InvalidEntityException {
+        try {
+            Power toAdd = new Power("First Power");
+            Power returned = dao.addPower(toAdd);
+            fail("Should have hit DuplicateNameException");
+        } catch (DuplicateNameException ex) {
+        }
+        
+    }
+    
+    @Test
+    public void testAddPowerNullName() throws PowerDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Power toAdd = new Power();
+            toAdd.setName(null);
+            dao.addPower(toAdd);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testAddPowerBadName() throws PowerDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Power toAdd = new Power(createBadName());
+            dao.addPower(toAdd);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
 
     /**
      * Test of editPower method, of class PowerDBImpl.
      */
     @Test
-    public void testEditPower() throws PowerDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+    public void testEditPowerGoldenPath() throws PowerDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         Power toEdit = dao.getPowerById(1);
         toEdit.setName("First Power PE");
         dao.editPower(toEdit);
         Power postEdit = dao.getPowerById(1);
         assertEquals(1, postEdit.getId());
         assertEquals("First Power PE", postEdit.getName());
+    }
+    
+    @Test
+    public void testEditPowerDuplicateName() throws PowerDaoException, BadUpdateException, InvalidEntityException {
+        try {
+            Power toEdit = dao.getPowerById(1);
+            toEdit.setName("Third Power");
+            dao.editPower(toEdit);
+            fail("Should have hit DuplicateNameException");
+        } catch (DuplicateNameException ex) {
+        }
+        
+    }
+    
+    @Test
+    public void testEditPowerNullName() throws PowerDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Power toEdit = dao.getPowerById(1);
+            toEdit.setName(null);
+            dao.editPower(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+        
+    }
+    
+    @Test
+    public void testEditPowerBadName() throws PowerDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Power toEdit = dao.getPowerById(1);
+            toEdit.setName(createBadName());
+            dao.editPower(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+        
     }
 
     /**
@@ -156,6 +268,21 @@ public class PowerDBImplTest {
         Power last = postRemove.get(postRemove.size() - 1);
         assertEquals(3, last.getId());
         assertEquals("Third Power", last.getName());
+    }
+    
+    @Test
+    public void testRemovePowerBadId() throws PowerDaoException {
+        try {
+            dao.removePower(-1);
+            fail("Should have hit BadUpdateException");
+        } catch (BadUpdateException ex) {
+        }
+    }
+    
+    private String createBadName(){
+        char[] chars = new char[31];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
     }
     
 }

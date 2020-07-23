@@ -6,19 +6,16 @@
 package com.sg.SuperHeroSighting.dao;
 
 import com.sg.SuperHeroSighting.TestAppConfig;
-import com.sg.SuperHeroSighting.dto.Power;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.SuperDaoException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -193,62 +190,76 @@ public class SuperDBImplTest {
     }
     
     @Test  // Super( name, description, powers, orgs )
-    public void testCreateSuperNullName() throws SuperDaoException, InvalidEntityException, BadUpdateException, DuplicateNameException {
-        Super toCreate = dao.getSuperById(1);
-        toCreate.setName("Fourth Hero");
-        toCreate.setDescription("Fourth Desc");
-        Super returned = dao.createSuper(toCreate);
-        assertEquals(4, returned.getId());
-        assertEquals("Fourth Hero", returned.getName());
-        assertEquals("Fourth Desc", returned.getDescription());
-        assertEquals(2, returned.getPowers().size());
-        assertEquals(1, returned.getOrgs().size());
+    public void testCreateSuperNullName() throws BadUpdateException, DuplicateNameException, SuperDaoException {
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setName(null);
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }   
+    }
+    
+    @Test  // Super( name, description, powers, orgs )
+    public void testCreateSuperBadName() throws BadUpdateException, DuplicateNameException, SuperDaoException {
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setName(createBadName());
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }   
     }
     
     @Test  // Super( name, description, powers, orgs )
     public void testCreateSuperNullDesc() throws SuperDaoException, InvalidEntityException, BadUpdateException, DuplicateNameException {
-        Super toCreate = dao.getSuperById(1);
-        toCreate.setName("Fourth Hero");
-        toCreate.setDescription("Fourth Desc");
-        Super returned = dao.createSuper(toCreate);
-        assertEquals(4, returned.getId());
-        assertEquals("Fourth Hero", returned.getName());
-        assertEquals("Fourth Desc", returned.getDescription());
-        assertEquals(2, returned.getPowers().size());
-        assertEquals(1, returned.getOrgs().size());
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setDescription(null);
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        } 
+    }
+    
+    @Test  // Super( name, description, powers, orgs )
+    public void testCreateSuperBadDesc() throws BadUpdateException, DuplicateNameException, SuperDaoException {
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setName(createBadDescription());
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }   
     }
     
     @Test  // Super( name, description, powers, orgs )
     public void testCreateSuperNullPowers() throws SuperDaoException, InvalidEntityException, BadUpdateException, DuplicateNameException {
-        Super toCreate = dao.getSuperById(1);
-        toCreate.setName("Fourth Hero");
-        toCreate.setDescription("Fourth Desc");
-        Super returned = dao.createSuper(toCreate);
-        assertEquals(4, returned.getId());
-        assertEquals("Fourth Hero", returned.getName());
-        assertEquals("Fourth Desc", returned.getDescription());
-        assertEquals(2, returned.getPowers().size());
-        assertEquals(1, returned.getOrgs().size());
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setPowers(null);
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        } 
     }
     
     @Test  // Super( name, description, powers, orgs )
     public void testCreateSuperNullOrgs() throws SuperDaoException, InvalidEntityException, BadUpdateException, DuplicateNameException {
-        Super toCreate = dao.getSuperById(1);
-        toCreate.setName("Fourth Hero");
-        toCreate.setDescription("Fourth Desc");
-        Super returned = dao.createSuper(toCreate);
-        assertEquals(4, returned.getId());
-        assertEquals("Fourth Hero", returned.getName());
-        assertEquals("Fourth Desc", returned.getDescription());
-        assertEquals(2, returned.getPowers().size());
-        assertEquals(1, returned.getOrgs().size());
+        try {
+            Super toCreate = dao.getSuperById(1);
+            toCreate.setOrgs(null);
+            dao.createSuper(toCreate);
+            fail("Should have thrown InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        } 
     }
 
     /**
      * Test of editSuper method, of class SuperDBImpl.
      */
     @Test
-    public void testEditSuper() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+    public void testEditSuperGoldenPath() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
         Super toEdit = dao.getSuperById(1);
         toEdit.setName("First Hero PE");
         toEdit.setDescription("First Description PE");
@@ -259,6 +270,72 @@ public class SuperDBImplTest {
         assertEquals(toEdit.getDescription(), postEdit.getDescription());
         assertEquals(toEdit.getPowers(), postEdit.getPowers());
         assertEquals(toEdit.getOrgs(), postEdit.getOrgs());
+    }
+    
+    @Test
+    public void testEditSuperNullName() throws SuperDaoException, BadUpdateException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setName(null);
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditSuperBadName() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setName(createBadName());
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditSuperNullDesc() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setDescription(null);
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditSuperBadDesc() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setDescription(createBadDescription());
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditSuperNullPowers() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setName(null);
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
+    }
+    
+    @Test
+    public void testEditSuperNullOrgs() throws SuperDaoException, BadUpdateException, InvalidEntityException, DuplicateNameException {
+        try {
+            Super toEdit = dao.getSuperById(1);
+            toEdit.setName(null);
+            dao.editSuper(toEdit);
+            fail("Should have hit InvalidEntityException");
+        } catch (InvalidEntityException ex) {
+        }
     }
 
     /**
@@ -293,6 +370,18 @@ public class SuperDBImplTest {
         } catch (BadUpdateException ex) {
         }
         
+    }
+    
+    private String createBadName(){
+        char[] chars = new char[31];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
+    }
+    
+    private String createBadDescription(){
+        char[] chars = new char[256];
+        Arrays.fill(chars, 'a');
+        return new String(chars);
     }
 
 }
