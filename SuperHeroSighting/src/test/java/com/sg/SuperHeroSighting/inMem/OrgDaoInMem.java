@@ -9,6 +9,7 @@ import com.sg.SuperHeroSighting.dao.OrgDao;
 import com.sg.SuperHeroSighting.dto.Org;
 import com.sg.SuperHeroSighting.dto.Super;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
+import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.OrgDaoException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +29,8 @@ public class OrgDaoInMem implements OrgDao{
     
     List<Org> allOrgs = new ArrayList<>();
     Set<Org> orgSet = new HashSet<>();
-    Set<Super> superSet = new HashSet<>();
+    Set<Super> superSet1 = new HashSet<>();
+    Set<Super> superSet2 = new HashSet<>();
     Super sup1 = new Super(1, "FN", "FD", null, orgSet);
     
 
@@ -85,7 +87,12 @@ public class OrgDaoInMem implements OrgDao{
     }
 
     @Override
-    public Org createOrg(Org toAdd) throws OrgDaoException, BadUpdateException {
+    public Org createOrg(Org toAdd) throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        for(Org o : allOrgs){
+            if(o.getName().equalsIgnoreCase(toAdd.getName())){
+                throw new DuplicateNameException("Name already exists");
+            }
+        }
         int nextId = allOrgs.stream().mapToInt(o -> o.getId()).max().orElse(0) + 1;
         toAdd.setId(nextId);
         allOrgs.add(toAdd);
@@ -93,7 +100,15 @@ public class OrgDaoInMem implements OrgDao{
     }
 
     @Override
-    public void editOrg(Org toEdit) throws OrgDaoException, BadUpdateException {
+    public void editOrg(Org toEdit) throws OrgDaoException, BadUpdateException, DuplicateNameException {
+        for(Org o : allOrgs){
+            if(o.getName().equalsIgnoreCase(toEdit.getName())){
+                if(o.getId() != toEdit.getId()){
+                    throw new DuplicateNameException("Name already exists");
+                } else{
+                }
+            }
+        }
         boolean isValid = false;
         for(Org o : allOrgs){
             if(o.getId() == toEdit.getId()){
@@ -131,14 +146,14 @@ public class OrgDaoInMem implements OrgDao{
     public void setUp(){
         
         orgSet.clear();
-        superSet.clear();
+        superSet1.clear();
         allOrgs.clear();
         
-        superSet.add(sup1);
+        superSet1.add(sup1);
         
-        Org o1 = new Org(1, "First Org", "First Desc", "First Adr", "First Phone", superSet);
-        Org o2 = new Org(1, "Second Org", "Second Desc", "Second Adr", "Second Phone", superSet);
-        Org o3 = new Org(1, "Third Org", "Third Desc", "Third Adr", "Third Phone", null);
+        Org o1 = new Org(1, "First Org", "First Desc", "First Adr", "First Phone", superSet1);
+        Org o2 = new Org(2, "Second Org", "Second Desc", "Second Adr", "Second Phone", superSet1);
+        Org o3 = new Org(3, "Third Org", "Third Desc", "Third Adr", "Third Phone", superSet2);
         
         orgSet.add(o3);
         

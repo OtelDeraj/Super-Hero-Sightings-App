@@ -89,7 +89,8 @@ public class OrgService {
     }
 
     private void validateOrg(Org toCheck) throws InvalidEntityException {
-        if(toCheck == null || toCheck.getName().isBlank() || toCheck.getDescription().isBlank() 
+        if(toCheck == null || toCheck.getName() == null || toCheck.getDescription() == null || toCheck.getAddress() == null || toCheck.getPhone() == null 
+                || toCheck.getName().isBlank() || toCheck.getDescription().isBlank() 
                 || toCheck.getAddress().isBlank() || toCheck.getPhone().isBlank() || toCheck.getSupers().isEmpty()) {
             throw new InvalidEntityException("Please ensure all fields are filled in.");
         }

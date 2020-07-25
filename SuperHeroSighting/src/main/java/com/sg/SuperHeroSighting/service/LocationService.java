@@ -11,6 +11,7 @@ import com.sg.SuperHeroSighting.dto.Location;
 import com.sg.SuperHeroSighting.exceptions.BadUpdateException;
 import com.sg.SuperHeroSighting.exceptions.DuplicateNameException;
 import com.sg.SuperHeroSighting.exceptions.EmptyResultException;
+import com.sg.SuperHeroSighting.exceptions.InvalidCoordException;
 import com.sg.SuperHeroSighting.exceptions.InvalidEntityException;
 import com.sg.SuperHeroSighting.exceptions.InvalidIdException;
 import com.sg.SuperHeroSighting.exceptions.InvalidNameException;
@@ -56,12 +57,12 @@ public class LocationService {
         }
     }
     
-    public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException {
+    public Location getLocationByCoord(Coord toSearch) throws InvalidEntityException, InvalidCoordException {
         validateCoord(toSearch);
         try {
             return locDao.getLocationByCoord(toSearch);
         } catch (LocationDaoException ex) {
-            throw new InvalidEntityException("Could not find location for given Coord");
+            throw new InvalidCoordException("Could not find location for given Coord");
         }
     }
     
